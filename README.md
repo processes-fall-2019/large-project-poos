@@ -1,6 +1,6 @@
 # large-project-poos
 
-## Project setupp
+## Project setup
 ```
 yarn install
 ```
