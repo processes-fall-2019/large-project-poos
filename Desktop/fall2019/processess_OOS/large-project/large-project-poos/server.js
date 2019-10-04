@@ -2,10 +2,12 @@ const express = require('express')
 const serveStatic = require('serve-static')
 const bodyParser = require('body-parser')
 // const cors = require('cors')
+const morgan = require('morgan')
 const path = require('path')
 const port = process.env.PORT || 8080
 const app = express()
 
+app.use(morgan('combined'))
 app.use(bodyParser.json())
 
 //here we are configuring dist to serve app files
