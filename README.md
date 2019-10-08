@@ -1,29 +1,16 @@
 # large-project-poos
 
-## Project setup
+## Install dependencies to setup project
 ```
-yarn install
-```
-
-### Compiles and hot-reloads for development
-```
-yarn run serve
+npm install
 ```
 
-### Compiles and minifies for production
+## Build app so server has all data needed for production
 ```
-yarn run build
-```
-
-### Run your tests
-```
-yarn run test
+npm run build
 ```
 
-### Lints and fixes files
+### Compiles app and starts server on specified port
 ```
-yarn run lint
+npm start
 ```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
