@@ -33,7 +33,8 @@ app.use(morgan('combined'))
 app.use(bodyParser.json())
 
 //here we are configuring dist to serve app files
-app.use('/', serveStatic(path.join(__dirname, '/dist')))
+// app.use('/', serveStatic(path.join(__dirname, '/dist')))
+app.use(serveStatic(path.join(__dirname, '/dist')))
 
 require('./routes')(app, knex)
 
