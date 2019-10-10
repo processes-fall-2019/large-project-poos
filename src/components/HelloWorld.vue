@@ -9,7 +9,7 @@
 <script>
 export default {
   name: 'HelloWorld',
-  props: {
+  props: {   // these props came in from App.vue ... see how to use these props ...
     msg: String
   }
 }
