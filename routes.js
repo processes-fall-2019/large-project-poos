@@ -145,11 +145,13 @@
 //   // })
 // }
 
+const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy')
+var userId
 
 module.exports = (app, knex) => {
-  app.get('/register', (req, res) => {
+  app.post('/register', (req, res) => {
     res.send({
-      message: 'Hello!'
+      message: `Hello ${req.body.email}, Your user was registered`
     })
   })
 
