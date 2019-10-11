@@ -145,7 +145,7 @@
 //   // })
 // }
 
-const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy')
+// const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy')
 var userId
 
 module.exports = (app, knex) => {
