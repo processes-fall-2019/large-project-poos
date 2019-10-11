@@ -1,8 +1,12 @@
 <template>
   <div class="hello">
     <h1>{{ msg }}</h1>
-    <button> Login </button>&nbsp;&nbsp;&nbsp;
-    <button> Sign up </button>
+    <router-link>
+      <button> Login </button>
+    </router-link> &nbsp;&nbsp;&nbsp;
+    <router-link :to="{name: 'register'}">
+      <button> Register </button>
+    </router-link>
   </div>
 </template>
 
