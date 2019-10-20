@@ -145,31 +145,52 @@
 //   // })
 // }
 
-// const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy')
+const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy')
 var userId
 
 module.exports = (app, knex) => {
-  app.post('/register', (req, res) => {
-    res.send({
-      message: `Hello ${req.body.email}, Your user was registered`
-    })
+  app.post('/register', AuthenticationControllerPolicy.register, async (req, res) => {
+    (await knex('users')
+      .insert({
+        user_name: req.body.username,
+        email: req.body.email,
+        password: req.body.password
+      })
+      .then(function () {
+        res.send({
+          message: `Hello ${req.body.username}, your user was registered`
+        })
+      })
+      .catch(e => {
+        res.send({
+          error: 'This email is already in use.'
+        })
+      }))
   })
 
-  // app.post('/register', AuthenticationControllerPolicy.register, async (req, res) => {
-  //   (await knex('users')
-  //     .insert({
-  //       email: req.body.email,
-  //       password: req.body.password
-  //     })
-  //     .then(function () {
-  //       res.send({
-  //         message: `Hello ${req.body.email}, your user was registered!`
-  //       })
-  //     })
-  //     .catch(e => {
-  //       res.send({
-  //         error: 'This email is already in use.'
-  //       })
-  //     }))
-  // })
+
+  app.post('/login', async (req, res) => {
+     const {username, password} = req.body
+     const user = await knex.select().from('users')
+       .where({ user_name: username, password: password })
+       .then()
+       .catch(e => {
+         res.send({
+           error: 'Error when fetching user from database.'
+         })
+       })
+
+     if (user.length === 0) {
+       return res.send({
+         error: 'User not found.'
+       })
+     }
+
+     userId = user[0].id
+
+     res.send({
+       message: `Hello ${req.body.username}, Welcome back.`,
+       user: user
+     })
+   })
 }
