@@ -5,8 +5,6 @@ exports.up = function(knex) {
       if (!exists) {
         return knex.schema.createTable('users', function (t) {
           t.increments('id')
-          t.string('first_name')
-          t.string('last_name')
           t.string('user_name')
           t.string('email')
           t.string('password')
