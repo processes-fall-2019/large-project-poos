@@ -43,11 +43,14 @@ export default {
 
         // this.$store.dispatch('setUser', response.data.user)
         // console.log('herrreee', this.$store.state.user[0].id)
-        // this.$router.push({
-        //   name: 'contacts'
-        // })
+
+        this.$router.push({
+          name: 'homepage'
+        })
+
         // console.log('ressy', response.data)
       } catch (error) {
+        console.log('Error logging in.')
         this.error = error.response.data.error
       }
     },
