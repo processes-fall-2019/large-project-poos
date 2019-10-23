@@ -37,7 +37,7 @@ app.use(bodyParser.json())
 // app.use('/', serveStatic(path.join(__dirname, '/dist')))
 app.use(serveStatic(path.join(__dirname, '/dist')))
 
-require('./routes')(app, knex)
+require('./routes')(app, knex)     // TODO: this should go in ../api/routes
 
 app.listen(port)
 
