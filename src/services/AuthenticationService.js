@@ -7,9 +7,9 @@ export default {
   login (credentials) {
     return Api().post('login', credentials)
   },
-  // contacts (credentials) {
-  //   return Api().get('contacts', credentials)
-  // },
+  upload (credentials) {
+    return Api().post('upload', credentials)
+  },
   // addContact (credentials) {
   //   return Api().post('add-contact', credentials)
   // },
