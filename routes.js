@@ -146,6 +146,8 @@
 // }
 
 const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy')
+const LoginPolicy = require('./api/policies/LoginPolicy')
+
 var userId
 
 module.exports = (app, knex) => {
@@ -163,13 +165,13 @@ module.exports = (app, knex) => {
       })
       .catch(e => {
         res.send({
-          error: 'This email is already in use.'
+          error: 'This email/username is already in use.'
         })
       }))
   })
 
 
-  app.post('/login', async (req, res) => {
+  app.post('/login', LoginPolicy.login, async (req, res) => {
      const {username, password} = req.body
      const user = await knex.select().from('users')
        .where({ user_name: username, password: password })
@@ -193,4 +195,13 @@ module.exports = (app, knex) => {
        user: user
      })
    })
+
+  // app.post('/upload', formData)
+  app.post('/upload', async (req, res) => {
+    res.send({
+      message: `File Uploaded.`,
+      file: req.body
+    })
+  })
+
 }
