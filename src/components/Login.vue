@@ -28,12 +28,14 @@ export default {
   },
   methods: {
     async login () {
+      // eslint-disable-next-line
       console.log('hi')
       try {
         const response = await AuthenticationService.login({
           username: this.username,
           password: this.password   // TODO: salt and encrypt password
         })
+        // eslint-disable-next-line
         console.log('res', response)
 
         if (response.data.error) {
@@ -50,6 +52,7 @@ export default {
 
         // console.log('ressy', response.data)
       } catch (error) {
+        // eslint-disable-next-line
         console.log('Error logging in.')
         this.error = error.response.data.error
       }

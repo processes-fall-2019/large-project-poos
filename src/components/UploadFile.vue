@@ -1,49 +1,122 @@
 <template>
   <div>
+    <div v-if="message">
+      <div>
+        {{ message }}
+      </div>
+    </div>
     <form @submit.prevent="sendFile" enctype="multipart/form-data">
       <div class="field">
-        <!-- <label for="file" class="label"> Upload File </label> -->
-        <input type="file" ref="file" @change="selectFile"/>
+        <div class="file is-boxed is-primary">
+          <label class="file-label">
+            <input
+              multiple
+              type="file"
+              ref="files"
+              @change="selectFile"
+              class="file-input"
+            />
+            <span class="file-cta">
+              <span class="file-icon">
+                <i class="fas fa-upload"></i>
+              </span>
+              <span class="file-label">
+                Choose a file...
+              </span>
+            </span>
+
+            <!-- <span v-if="files" class="file-name"> {{ files.name }}</span> -->
+
+          </label>
+        </div>
+
       </div>
 
-      <div>
-        <button> Send </button>
+      <div class="field">
+        <div v-for="(file, index) in files" :key="index" class="level">
+          <div class="level-left">
+            <div class="level-item"> {{ file.name }}</div>
+          </div>
+          <div class="level-right">
+            <div class="level-item">
+              <a @click.prevent="files.splice(index, 1)" class="delete"></a>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="field">
+        <button class="button is-info"> Send </button>
       </div>
     </form>
   </div>
 </template>
 
 <script>
-import AuthenticationService from '../services/AuthenticationService'
-
+// import AuthenticationService from '../services/AuthenticationService'
+import axios from 'axios'
+import { forEach } from 'lodash'
 export default {
   data () {
     return {
-      file: ""
+      files: [],
+      message: "",
+      error: false
     }
   },
   methods: {
     selectFile() {
-      this.file = this.$refs.file.files[0]
-      console.log(this.file)
+      const files = this.$refs.files.files
+      this.files = [ ...this.files, ...files ]
+
+      // this.file = this.$refs.file.files[0]
+      this.error = false
+      this.message = ''
+      // eslint-disable-next-line
+      console.log(this.files)
     },
 
     async sendFile() {
       const formData = new FormData()
-      formData.append('file', this.file)
+      forEach(this.files, file => {
+        formData.append('files', file)
+      })
 
-      try { // axios.post('/upload', formData)
-        const file = await AuthenticationService.upload({
-          file: this.file,
-          formData: formData,
-        })
-
-        console.log(file);
-
-      } catch (e) {
-        console.log(e)
+      try {
+        await axios.post('/upload', formData)
+        this.message = "Files have been uploaded."
+        this.files = []
+      } catch(err) {
+        this.message = err.response.data.error
+        this.error = true
       }
 
+
+      // const formData = new FormData()
+      // formData.append('file', this.file)
+      //
+      // // try { // axios.post('/upload', formData)
+      // //   const file = await AuthenticationService.upload({
+      // //     file: this.file,
+      // //     formData: formData,
+      // //   })
+      // //
+      // //   console.log(file);
+      // //
+      // // } catch (e) {
+      // //   console.log(e)
+      // // }
+      //
+      // try {
+      //   await axios.post('/upload', formData)
+      //   this.message = "file has been uploaded"
+      //   this.file = ""
+      //   this.error = false
+      // } catch (error) {
+      //   this.message = "Something went wrong when uploading file"
+      //   this.error = true
+      // }
     }
   }
 }
