@@ -150,7 +150,7 @@ const LoginPolicy = require('./api/policies/LoginPolicy')
 
 var userId
 
-module.exports = (app, knex) => {
+module.exports = (app, knex, upload) => {
   app.post('/register', AuthenticationControllerPolicy.register, async (req, res) => {
     (await knex('users')
       .insert({
@@ -197,11 +197,12 @@ module.exports = (app, knex) => {
    })
 
   // app.post('/upload', formData)
-  app.post('/upload', async (req, res) => {
-    res.send({
-      message: `File Uploaded.`,
-      file: req.body
-    })
+  app.post('/upload', upload.array('files'), async (req, res) => {
+    // res.send({
+    //   message: `File Uploaded.`,
+    //   file: req.body
+    // })
+    res.json({ files: req.files })
   })
 
 }
