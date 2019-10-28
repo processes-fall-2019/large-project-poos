@@ -2,14 +2,25 @@
   <div>
     <h1> Welcome </h1>
     <UploadFile/>
+    <br>
+    <br>
+    <DropZone/>
+    <br>
+    <br>
+    <FilesTable/>
   </div>
 </template>
 
 <script>
 import UploadFile from './UploadFile'
+import FilesTable from './FilesTable'
+import DropZone from './DropZone'
+
 export default {
   components: {
     UploadFile,
+    FilesTable,
+    DropZone
   },
   data () {
     return {
