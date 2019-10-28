@@ -10,6 +10,9 @@ export default {
   upload (credentials) {
     return Api().post('upload', credentials)
   },
+  getFiles (credentials) {
+    return Api().get('getFiles', credentials)
+  }
   // addContact (credentials) {
   //   return Api().post('add-contact', credentials)
   // },
