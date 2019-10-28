@@ -197,12 +197,58 @@ module.exports = (app, knex, upload) => {
    })
 
   // app.post('/upload', formData)
-  app.post('/upload', upload.array('files'), async (req, res) => {
-    // res.send({
-    //   message: `File Uploaded.`,
-    //   file: req.body
-    // })
-    res.json({ files: req.files })
-  })
+  // app.post('/upload', upload.array('files'), async (req, res) => {
+  //   // res.send({
+  //   //   message: `File Uploaded.`,
+  //   //   file: req.body
+  //   // })
+  //   res.json({ files: req.files })
+  // })
 
+  app.post('/upload', upload.array('files'), async (req, res) => {
+    const filesToInsert = req.files.map(file => {
+      return {
+        name: file.originalname,
+        contact_id: null,
+        user_id: userId,
+        amazon_url: null
+      }
+    })
+
+    console.log("this is files", req.files);
+    console.log("this is query", filesToInsert);
+
+
+    const files = await knex('files')
+      .insert(filesToInsert)
+      .then(function () {
+        res.send({
+          message: `file uploaded to database!`
+        })
+      })
+      .catch(e => {
+        res.send({
+          error: 'Error when uploading file to database.'
+        })
+      })
+
+  })
+  
+
+  app.get('/getFiles', async (req, res) => {
+     const files = await knex.select().from('files')
+       .where({ user_id: userId })
+       .then(function (file) {
+         console.log('ske')
+         res.send(file)
+       })
+       .catch(e => {
+         res.send({
+           message: req.body,
+           error: 'Error when fetching from database.'
+         })
+       })
+
+       console.log("test", files);
+   })
 }
