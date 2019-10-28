@@ -5,7 +5,7 @@
         {{ message }}
       </div>
     </div>
-    <form @submit.prevent="sendFile" enctype="multipart/form-data">
+    <form class="align" @submit.prevent="sendFile" enctype="multipart/form-data">
       <div class="field">
         <div class="file is-boxed is-primary">
           <label class="file-label">
@@ -47,9 +47,10 @@
       </div>
 
       <div class="field">
-        <button class="button is-info"> Send </button>
+        <button class="button is-info"> Send files to database </button>
       </div>
     </form>
+
   </div>
 </template>
 
@@ -65,12 +66,12 @@ export default {
       error: false
     }
   },
+  components: {
+  },
   methods: {
     selectFile() {
       const files = this.$refs.files.files
       this.files = [ ...this.files, ...files ]
-
-      // this.file = this.$refs.file.files[0]
       this.error = false
       this.message = ''
       // eslint-disable-next-line
@@ -82,6 +83,25 @@ export default {
       forEach(this.files, file => {
         formData.append('files', file)
       })
+
+      let files = this.files
+      // eslint-disable-next-line
+      console.log("The files: ", files)
+      this.$root.$emit("files", files)
+      // this.$root.$emit("files", [
+      //   {
+      //     "id": 1,
+      //     "name": "Nudz",
+      //     "recipient": "The boys",
+      //     "date_uploaded": "12/07/2018",
+      //   },
+      //   {
+      //     "id": 2,
+      //     "name": "Vault PIN",
+      //     "recipient": "John Doe",
+      //     "date_uploaded": "04/20/2018",
+      //   }
+      // ])
 
       try {
         await axios.post('/upload', formData)
@@ -127,10 +147,8 @@ export default {
   .error {
     color: red;
   }
-  .center {
-    margin:  auto;
-    align-items: center;
-    justify-content: center;
-    vertical-align: middle;
+  .align {
+    text-align: left;
+    padding: 20px;
   }
 </style>
