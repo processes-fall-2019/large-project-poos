@@ -39,7 +39,7 @@ export default {
           email: this.email,
           password: this.password,
         })
-
+        // eslint-disable-next-line
         console.log('user', user.data)
 
         if (user.data.error) {
@@ -53,6 +53,7 @@ export default {
 
         alert('Hello ' + this.username + ' your user was successfully registered!')
       } catch (error) {
+        // eslint-disable-next-line
         console.log('Error registering.')
         this.error = error.response.data.error
       }
