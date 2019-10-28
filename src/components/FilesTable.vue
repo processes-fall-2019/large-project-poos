@@ -27,24 +27,15 @@
 
 <script>
 import VueBootstrap4Table from 'vue-bootstrap4-table'
+import AuthenticationService from '../services/AuthenticationService'
 // import FileModal from "./FileModal.vue"
+// import knex from "../../db/db.js"
 
 export default {
   name: 'PastEvents',
   data () {
     return {
-      rowss: [{
-        "id": 1,
-        "name": "Nudz",
-        "recipient": "The boys",
-        "date_uploaded": "12/07/2018",
-      },
-      {
-        "id": 2,
-        "name": "Vault PIN",
-        "recipient": "John Doe",
-        "date_uploaded": "04/20/2018",
-      }],
+      userId: 0,
       rows: [],
       columns: [{
         label: "id",
@@ -62,7 +53,7 @@ export default {
       },
       {
         label: "Date uploaded",
-        name: "date_uploaded",
+        name: "created_at",
         sort: true,
         filter: {
           type: "simple",
@@ -97,13 +88,25 @@ export default {
       }
     }
   },
-  mounted () {
-    this.$root.$on('files', (file) => {
-      this.rows.push(file)
-    })
+  async created () { // mounted
+    // this.$root.$on('files', (file) => {
+    //   this.rows.push(file)
+    // })
 
-    // eslint-disable-next-line
-    console.log("ske", this.rows);
+    try {
+        const response = await AuthenticationService.getFiles({
+          user_id: this.userId
+        })
+
+        // eslint-disable-next-line
+        console.log('the resssssy', response)
+
+        this.rows = response.data
+
+        return response
+      } catch (error) {
+        this.error = error.response.data.error
+      }
   },
   props: {
     msg: String
