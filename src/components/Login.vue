@@ -37,6 +37,7 @@ export default {
         })
         // eslint-disable-next-line
         console.log('res', response)
+        // this.$root.$emit('userId', response.data.user[0].id)
 
         if (response.data.error) {
           alert('User does not exist.')
