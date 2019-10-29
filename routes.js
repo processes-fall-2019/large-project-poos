@@ -4,7 +4,7 @@
 //
 // module.exports = (app, knex) => {
 //   // app.get('/', function (req, res) {
-//   //   res.redirect('/HelloWorld')
+//   //   res.redirect('/LandingPage')
 //   // })
 //
 //   app.post('/register', AuthenticationControllerPolicy.register, async (req, res) => {
@@ -233,7 +233,7 @@ module.exports = (app, knex, upload) => {
       })
 
   })
-  
+
 
   app.get('/getFiles', async (req, res) => {
      const files = await knex.select().from('files')
