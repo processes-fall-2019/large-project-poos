@@ -16,7 +16,7 @@
         />
 
         <p v-if="!uploading" class="call-to-action">
-          Or drag your files onto here...*not working, use vue-drop-zone instead*
+          Or drag and drop a file onto here to upload it directly...
         </p>
 
         <p v-if="uploading" class="progress-bar">
