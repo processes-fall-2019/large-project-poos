@@ -10,7 +10,7 @@
       <div class="error" v-html="error"/>
     <br>
     <button @click="login"> Login </button>&nbsp;&nbsp;
-    <router-link :to="{name: 'HelloWorld'}">
+    <router-link :to="{name: 'LandingPage'}">
       <button> Cancel </button>
     </router-link>
   </div>
