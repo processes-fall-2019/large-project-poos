@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3> Your Files (lets pull this from database instead) </h3>
+    <h3> Your Files </h3>
     <div class="table">
       <!-- <vue-bootstrap4-table :rows="rows" :columns="columns" :config="config" @on-select-row="openVisitorModal"> -->
       <vue-bootstrap4-table :rows="rows" :columns="columns" :config="config">
