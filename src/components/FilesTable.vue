@@ -20,8 +20,6 @@
        </template>
       </vue-bootstrap4-table>
     </div>
-
-    <button @click="print"> test </button>
   </div>
 </template>
 
@@ -37,11 +35,7 @@ export default {
     return {
       userId: 0,
       rows: [],
-      columns: [{
-        label: "id",
-        name: "id",
-        sort: true,
-      },
+      columns: [
       {
         label: "File Name",
         name: "name",
@@ -62,7 +56,7 @@ export default {
       },
       {
         label: "Intended Recipient",
-        name: "recipient",
+        name: "contact_name",
         filter: {
           type: "simple",
           placeholder: "Search Intended Recipient"
@@ -88,11 +82,7 @@ export default {
       }
     }
   },
-  async created () { // mounted
-    // this.$root.$on('files', (file) => {
-    //   this.rows.push(file)
-    // })
-
+  async created () {
     try {
         const response = await AuthenticationService.getFiles({
           user_id: this.userId
@@ -115,23 +105,6 @@ export default {
     VueBootstrap4Table
   },
   methods: {
-    print () {
-      // eslint-disable-next-line
-      console.log("da ske", this.rows);
-      // eslint-disable-next-line
-      console.log("da skeeee (working)", this.rowss);
-
-      let x = this.rows[0].map(x => x)
-      this.rows = x
-
-      // eslint-disable-next-line
-      console.log(this.rows);
-
-      this.$forceUpdate();
-
-      // eslint-disable-next-line
-      console.log(x);
-    }
   }
 }
 </script>
