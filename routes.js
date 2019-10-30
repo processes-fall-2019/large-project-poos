@@ -147,8 +147,15 @@
 
 const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy')
 const LoginPolicy = require('./api/policies/LoginPolicy')
-
+const sharp = require('sharp')
+const fs = require('fs')
+const AWS = require('aws-sdk')
 var userId
+
+AWS.config.update({
+  accessKeyId: 'AKIAIPJZNXAUHEY7PCUA',
+  secretAccessKey: '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'
+})
 
 module.exports = (app, knex, upload) => {
   app.post('/register', AuthenticationControllerPolicy.register, async (req, res) => {
@@ -206,12 +213,30 @@ module.exports = (app, knex, upload) => {
   // })
 
   app.post('/upload', upload.array('files'), async (req, res) => {
+    try {
+      const buffer = await sharp(req.files[0].path)     // chnage to maybe a map
+        .resize(300)
+        // .background('white')
+        // .embed()
+        .toBuffer()
+
+      const s3Res = await new AWS.S3().upload({
+        Bucket: 'large-project-files',
+        Key: 'test-upload2',
+        Body: buffer,
+        ACL: 'public-read'
+      }).promise()
+    } catch (e) {
+      console.log(e);
+    }
+
     const filesToInsert = req.files.map(file => {
       return {
         name: file.originalname,
         contact_id: null,
         user_id: userId,
-        amazon_url: null
+        amazon_url: null,
+        contact_name: 'test'
       }
     })
 
@@ -231,6 +256,28 @@ module.exports = (app, knex, upload) => {
           error: 'Error when uploading file to database.'
         })
       })
+
+
+
+    // fs.unlink(req.files.path, () => {
+    //   res.json({ file: `./static/${req.files.originalname}` })
+    // })
+
+    // try {
+    //   await sharp(req.files.path)
+    //     .resize(300)
+    //     .background('white')
+    //     .embed()
+    //     .toFile(`./static/${req.files.originalname}`)
+    //
+    //   fs.unlink(req.files.path, () => {
+    //     res.json({ file: `./static/${req.files.originalname}` })
+    //   })
+    // } catch {
+    //   res.send({
+    //     error: 'Error when processing image.'
+    //   })
+    // }
 
   })
 
