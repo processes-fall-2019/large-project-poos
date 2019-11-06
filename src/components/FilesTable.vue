@@ -27,10 +27,9 @@
 import VueBootstrap4Table from 'vue-bootstrap4-table'
 import AuthenticationService from '../services/AuthenticationService'
 // import FileModal from "./FileModal.vue"
-// import knex from "../../db/db.js"
 
 export default {
-  name: 'PastEvents',
+  name: 'FilesTable',
   data () {
     return {
       userId: 0,
@@ -41,7 +40,7 @@ export default {
         name: "name",
         filter: {
           type: "simple",
-          placeholder: "Search File Name"
+          placeholder: "Search File Names"
         },
         sort: true,
       },
@@ -51,7 +50,7 @@ export default {
         sort: true,
         filter: {
           type: "simple",
-          placeholder: "Search Date uploaded"
+          placeholder: "Search Dates uploaded"
         },
       },
       {
@@ -59,7 +58,7 @@ export default {
         name: "contact_name",
         filter: {
           type: "simple",
-          placeholder: "Search Intended Recipient"
+          placeholder: "Search Intended Recipients"
         },
         sort: true,
       },
