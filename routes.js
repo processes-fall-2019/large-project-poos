@@ -107,6 +107,7 @@ module.exports = (app, knex, upload) => {
               error: 'Error when uploading file to database.'
             })
           })
+          files = []
       }).catch(function(err) {
         res.send(err.stack)
       })
