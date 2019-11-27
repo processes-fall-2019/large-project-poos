@@ -107,7 +107,7 @@ export default {
         await axios.post('/upload', formData)
         this.message = "Files have been uploaded."
         this.files = []
-        this.$forceUpdate()
+        location.reload()
       } catch(err) {
         this.message = err.response.data.error
         this.error = true
