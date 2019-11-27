@@ -1,6 +1,7 @@
 <template>
   <div>
     <h1> Welcome </h1>
+    <b-button href="#/" pill variant="danger" class="right">Logout</b-button>
     <UploadFile/>
     <br>
     <br>
@@ -41,5 +42,8 @@ export default {
     align-items: center;
     justify-content: center;
     vertical-align: middle;
+  }
+  .right {
+  float: right;
   }
 </style>
