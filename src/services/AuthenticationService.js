@@ -12,14 +12,8 @@ export default {
   },
   getFiles (credentials) {
     return Api().get('getFiles', credentials)
-  }
-  // addContact (credentials) {
-  //   return Api().post('add-contact', credentials)
-  // },
-  // deleteContact (credentials) {
-  //   return Api().delete('delete-contact', credentials)
-  // },
-  // searchContacts (credentials) {
-  //   return Api().get('search-contacts', credentials)
-  // }
+  },
+  deleteFile (credentials) {
+    return Api().delete('deleteFile', credentials)
+  },
 }
