@@ -2,6 +2,7 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router/index'
 import BootstrapVue from 'bootstrap-vue'
+import VModal from 'vue-js-modal'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
@@ -10,6 +11,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 // import { sync } from 'vuex-router-sync'
 
 Vue.use(BootstrapVue)
+Vue.use(VModal)
 
 Vue.config.productionTip = false
 
