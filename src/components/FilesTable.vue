@@ -23,6 +23,22 @@
          <button @click="deleteFile(props.row)" class="btn btn-danger">Delete</button>
        </template>
       </vue-bootstrap4-table>
+
+
+      <modal
+      :name="modalName"
+      height="auto"
+      width="1000px"
+      :scrollable="true"
+      @before-open="beforeOpen">
+
+      <div>
+        <img :src="fileUrl" />
+      </div>
+
+      </modal>
+
+
     </div>
   </div>
 </template>
@@ -37,6 +53,8 @@ export default {
   data () {
     return {
       userId: 0,
+      fileUrl: '',
+      modalName: 'files-modal',
       rows: [],
       columns: [
       {
@@ -131,7 +149,14 @@ export default {
     viewFile (row) {
       // eslint-disable-next-line
       console.log(row);
-      window.location.href = row.amazon_url;
+
+      this.fileUrl = row.amazon_url
+
+      this.$modal.show('files-modal', { row })
+
+      // window.location.href = row.amazon_url;
+    },
+    beforeOpen () {
     }
   }
 }
