@@ -18,6 +18,10 @@
          <!-- <button class="btn btn-primary" @click="openVisitorModal(props.row)">View Details</button> -->
          <button class="btn btn-primary">View File</button>
        </template>
+       <template slot="delete_file" slot-scope="props">
+         <!-- <button class="btn btn-primary" @click="openVisitorModal(props.row)">View Details</button> -->
+         <button @click="deleteFile(props.row)" class="btn btn-danger">Delete</button>
+       </template>
       </vue-bootstrap4-table>
     </div>
   </div>
@@ -66,6 +70,10 @@ export default {
         label: "",
         name: "open_modal",
         sort: false,
+      },{
+        label: "",
+        name: "delete_file",
+        sort: false,
       }],
       config: {
         pagination: false,
@@ -104,6 +112,22 @@ export default {
     VueBootstrap4Table
   },
   methods: {
+    async deleteFile (row) {
+      // eslint-disable-next-line
+      console.log(row);
+
+      let del = confirm("Are you sure you want to permanently delete this file?")
+
+      if (del) {
+        await AuthenticationService.deleteFile({
+          data: row
+        })
+      } else {
+        return false
+      }
+
+      location.reload()
+    }
   }
 }
 </script>
