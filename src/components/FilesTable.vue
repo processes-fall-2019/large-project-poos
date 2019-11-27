@@ -14,9 +14,9 @@
            <i class="fa fa-sort"></i>
        </template>
        <!-- <template slot="open_modal" slot-scope="props"> -->
-       <template slot="open_modal">
+       <template slot="open_modal" slot-scope="props">
          <!-- <button class="btn btn-primary" @click="openVisitorModal(props.row)">View Details</button> -->
-         <button class="btn btn-primary">View File</button>
+         <button @click="viewFile(props.row)" class="btn btn-primary">View File</button>
        </template>
        <template slot="delete_file" slot-scope="props">
          <!-- <button class="btn btn-primary" @click="openVisitorModal(props.row)">View Details</button> -->
@@ -114,7 +114,7 @@ export default {
   methods: {
     async deleteFile (row) {
       // eslint-disable-next-line
-      console.log(row);
+      // console.log(row);
 
       let del = confirm("Are you sure you want to permanently delete this file?")
 
@@ -127,6 +127,11 @@ export default {
       }
 
       location.reload()
+    },
+    viewFile (row) {
+      // eslint-disable-next-line
+      console.log(row);
+      window.location.href = row.amazon_url;
     }
   }
 }
