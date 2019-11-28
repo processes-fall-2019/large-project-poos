@@ -11,7 +11,7 @@
       <div class="error" v-html="error"/>
     <br>
     <button @click="register"> Register </button>&nbsp;&nbsp;
-    <router-link :to="{name: 'LandingPage'}">
+    <router-link :to="{name: 'login'}">
       <button> Cancel </button>
     </router-link>
   </div>
@@ -48,7 +48,7 @@ export default {
         }
 
         this.$router.push({
-            name: 'LandingPage'
+            name: 'login'
         })
 
         alert('Hello ' + this.username + ' your user was successfully registered!')
