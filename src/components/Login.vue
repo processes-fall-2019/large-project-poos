@@ -1,18 +1,42 @@
 <template>
   <div>
-    <h1>Login</h1>
     <br>
     <br>
-    <input type="" name="username" v-model="username" placeholder="user name"/>&nbsp;&nbsp;
-    <input type="password" name="password" v-model="password" placeholder="password"/>
-    <br>
-    <br>
-      <div class="error" v-html="error"/>
-    <br>
-    <button @click="login"> Login </button>&nbsp;&nbsp;
-    <router-link :to="{name: 'LandingPage'}">
-      <button> Cancel </button>
-    </router-link>
+    <b-container>
+      <form class="login border border-dark p-5">
+        <p class="h1 mb-4">Login</p>
+        <br />
+        <!-- Email -->
+        <input type="" class="form-control mb-4" placeholder="Username" v-model="username">
+        <!-- Password -->
+        <input type="password" class="form-control mb-4" placeholder="Password" v-model="password">
+        <div class="error" v-html="error"/>
+        <br />
+        <div class="d-flex justify-content-around">
+            <div>
+                <!-- Remember me -->
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" id="defaultLoginFormRemember">
+                    <label class="custom-control-label" for="defaultLoginFormRemember">Remember me</label>
+                </div>
+            </div>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <div>
+                <!-- Forgot password -->
+                <a href="">Forgot password?</a>
+            </div>
+        </div>
+        <br />
+        <br />
+        <!-- Sign in button -->
+        <button @click="login" class="btn btn-info btn-block my-4" type="submit">Sign in</button>
+        <div>
+            <router-link :to="{name: 'register'}">
+              <a href="">Not a member? Click here to sign up.</a>
+            </router-link>
+        </div>
+      </form>
+    </b-container>
   </div>
 </template>
 
@@ -73,4 +97,16 @@ export default {
     justify-content: center;
     vertical-align: middle;
   }
+  .login {
+  /* width: 50%; */
+  /* height: 650px; */
+  /* position:relative; */
+  display:inline-block;
+  /* top:50%; */
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+	/* color: #2c3e50; */
+	margin-left: auto;
+	margin-right: auto;
+  background-color: white;
+}
 </style>
