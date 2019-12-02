@@ -35,7 +35,7 @@
         <button @click="login" class="btn btn-info btn-block my-4 ">Sign in</button>
         <div>
             <router-link :to="{name: 'register'}">
-              <a href="">Not a member? Click here to sign up.</a>
+              <a href="">Not a member?</a>
             </router-link>
         </div>
       </form>
@@ -72,6 +72,7 @@ export default {
         if (response.data.error) {
           //alert('User does not exist.')
           this.loginFlag = true;
+          this.missingInfo = false;
           return false
         }
 
@@ -87,6 +88,7 @@ export default {
         // eslint-disable-next-line
         console.log('Error logging in.')
         this.missingInfo = true;
+        this.loginFlag = false;
         this.error = error.response.data.error
       }
     },
