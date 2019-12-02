@@ -1,16 +1,19 @@
 <template>
   <div>
-    <br>
+  <p class="h1 mb-4">Document Drop</p>
     <br>
     <b-container>
       <form class="login border border-dark p-5">
         <p class="h1 mb-4">Login</p>
         <br />
+          <b-alert v-model="loginFlag" variant="danger" @dismissed="loginFlag=false" dismissible>
+            Invalid login credentials
+          </b-alert>        
         <!-- Email -->
         <input type="" class="form-control mb-4" placeholder="Username" v-model="username">
         <!-- Password -->
         <input type="password" class="form-control mb-4" placeholder="Password" v-model="password">
-        <div class="error" v-html="error"/>
+        <div v-if="missingInfo" class="error" v-html="error"/>
         <br />
         <div class="d-flex justify-content-around">
             <div>
@@ -29,7 +32,7 @@
         <br />
         <br />
         <!-- Sign in button -->
-        <button @click="login" class="btn btn-info btn-block my-4" type="submit">Sign in</button>
+        <button @click="login" class="btn btn-info btn-block my-4 ">Sign in</button>
         <div>
             <router-link :to="{name: 'register'}">
               <a href="">Not a member? Click here to sign up.</a>
@@ -45,6 +48,8 @@ import AuthenticationService from '../services/AuthenticationService'
 export default {
   data () {
     return {
+      missingInfo: false,
+      loginFlag: false,
       username: '',
       password: '',
       error: null,
@@ -54,6 +59,7 @@ export default {
     async login () {
       // eslint-disable-next-line
       console.log('hi')
+      this.missingInfo = false;
       try {
         const response = await AuthenticationService.login({
           username: this.username,
@@ -64,7 +70,8 @@ export default {
         // this.$root.$emit('userId', response.data.user[0].id)
 
         if (response.data.error) {
-          alert('User does not exist.')
+          //alert('User does not exist.')
+          this.loginFlag = true;
           return false
         }
 
@@ -79,6 +86,7 @@ export default {
       } catch (error) {
         // eslint-disable-next-line
         console.log('Error logging in.')
+        this.missingInfo = true;
         this.error = error.response.data.error
       }
     },
