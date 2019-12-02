@@ -1,19 +1,25 @@
 <template>
   <div>
-    <h1>Register</h1>
-    <input type="" name="username" v-model="username" placeholder="user name"/>&nbsp;&nbsp;
-    <br>
-    <br>
-    <input type="email" name="email" v-model="email" placeholder="email"/>&nbsp;&nbsp;
-    <input type="password" name="password" v-model="password" placeholder="password"/>
-    <br>
-    <br>
-      <div class="error" v-html="error"/>
-    <br>
-    <button @click="register"> Register </button>&nbsp;&nbsp;
-    <router-link :to="{name: 'login'}">
-      <button> Cancel </button>
-    </router-link>
+    <b-container>
+      <form class="login border border-dark p-5">
+        <p class="h1 mb-4">Register</p>
+        <b-alert v-model="dupUser" variant="danger" @dismissed="dupUser=false" dismissible>
+            email is already in use <br>
+            <a href="">Forgot password?</a>
+          </b-alert> 
+        <input type="" class="form-control mb-4" placeholder="Username" v-model="username">
+        <input type="" class="form-control mb-4" placeholder="Email" v-model="email">
+        <input type="password" class="form-control mb-4" placeholder="Password" v-model="password">
+        <br>
+        <br>
+          <div v-if="missingInfo" class="error" v-html="error"/>
+        <br>
+        <button @click="register" class="btn btn-info btn-block"> Register </button>&nbsp;&nbsp;
+        <router-link :to="{name: 'login'}">
+          <button class="btn btn-info btn-block"> Cancel </button>
+        </router-link>
+      </form>
+    </b-container>
   </div>
 </template>
 
@@ -25,6 +31,8 @@ export default {
   },
   data () {
     return {
+      missingInfo: false,
+      dupUser: false,
       username: '',
       email: '',
       password: '',
@@ -33,6 +41,7 @@ export default {
   },
   methods: {
     async register () {
+      this.missingInfo = false;
       try {
         const user = await AuthenticationService.register({
           username: this.username,
@@ -43,7 +52,9 @@ export default {
         console.log('user', user.data)
 
         if (user.data.error) {
-          alert(user.data.error)  // TODO: CHANGE do not use alert dialogs like Lienecker said, also add one that says "This username is alreayd in use."
+          //alert(user.data.error)  // TODO: CHANGE do not use alert dialogs like Lienecker said, also add one that says "This username is alreayd in use."
+          this.dupUser = true;
+          this.missingInfo = false;
           return false
         }
 
@@ -55,6 +66,8 @@ export default {
       } catch (error) {
         // eslint-disable-next-line
         console.log('Error registering.')
+        this.missingInfo = true;
+        this.dupUser = false;
         this.error = error.response.data.error
       }
     }
