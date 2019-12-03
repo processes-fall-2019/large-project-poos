@@ -2,7 +2,9 @@
   <div>
     <h1> Welcome </h1>
     <br />
-    <b-button href="#/" pill variant="danger" class="right">Logout</b-button>
+    <div>
+      <b-button href="#/" pill variant="danger" class="right">Logout</b-button>
+    </div>
     <UploadFile/>
     <br>
     <br>
@@ -45,6 +47,6 @@ export default {
     vertical-align: middle;
   }
   .right {
-  float: right;
+  float: center;
   }
 </style>
