@@ -1,20 +1,29 @@
 <template>
   <div>
+    <p class="h1 mb-4">Document Drop</p>
+    <br>
     <b-container>
-      <form class="login border border-dark p-5">
+      <form class="register border border-dark p-5">
         <p class="h1 mb-4">Register</p>
+
         <b-alert v-model="dupUser" variant="danger" @dismissed="dupUser=false" dismissible>
             email is already in use <br>
             <a href="">Forgot password?</a>
           </b-alert> 
+        <!-- Username -->
         <input type="" class="form-control mb-4" placeholder="Username" v-model="username">
+        <!-- Email -->
         <input type="" class="form-control mb-4" placeholder="Email" v-model="email">
+        <!-- Password -->
         <input type="password" class="form-control mb-4" placeholder="Password" v-model="password">
         <br>
         <br>
-          <div v-if="missingInfo" class="error" v-html="error"/>
+        <!-- Error msg -->
+        <div v-if="missingInfo" class="error" v-html="error"/>
         <br>
-        <button @click="register" class="btn btn-info btn-block"> Register </button>&nbsp;&nbsp;
+        <!-- Register -->
+        <button @click="register" class="btn btn-info btn-block"> Register </button> <br>
+        <!-- Cancel -->
         <router-link :to="{name: 'login'}">
           <button class="btn btn-info btn-block"> Cancel </button>
         </router-link>
@@ -52,7 +61,8 @@ export default {
         console.log('user', user.data)
 
         if (user.data.error) {
-          //alert(user.data.error)  // TODO: CHANGE do not use alert dialogs like Lienecker said, also add one that says "This username is alreayd in use."
+          // alert(user.data.error)  
+          // TODO: CHANGE do not use alert dialogs like Lienecker said, also add one that says "This username is alreayd in use."
           this.dupUser = true;
           this.missingInfo = false;
           return false
@@ -81,5 +91,18 @@ export default {
 <style scoped>
   .error {
     color: red;
+  }
+
+  .register {
+   width: 25rem; 
+  /* height: 650px; */
+  /* position:relative; */
+  display:inline-block;
+  /* top:50%; */
+  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+	/* color: #2c3e50; */
+	margin-left: auto;
+	margin-right: auto;
+  background-color: white;
   }
 </style>
