@@ -26,7 +26,7 @@ module.exports = (app, knex, upload) => {
       })
       .catch(e => {
         res.send({
-          error: 'This email/username is already in use.'
+          error: 'This email/username is already in use.' + e
         })
       }))
   })
@@ -39,7 +39,7 @@ module.exports = (app, knex, upload) => {
        .then()
        .catch(e => {
          res.send({
-           error: 'Error when fetching user from database.'
+           error: 'Error when fetching user from database.' + e
          })
        })
 
@@ -94,7 +94,7 @@ module.exports = (app, knex, upload) => {
         promises.push(uploadToS3(file))
       }
 
-      Promise.all(promises).then(async function(data) {
+      Promise.all(promises).then(async function() {
         await knex('files')
           .insert(files)
           .then(function () {
@@ -104,7 +104,7 @@ module.exports = (app, knex, upload) => {
           })
           .catch(e => {
             res.send({
-              error: 'Error when uploading file to database.'
+              error: 'Error when uploading file to database.' + e
             })
           })
           files = []
@@ -113,7 +113,9 @@ module.exports = (app, knex, upload) => {
       })
 
     } catch (e) {
-      console.log(e);
+      res.send({
+        error: 'File upload failed.' + e
+      })
     }
 
     // const theFilesToInsert = req.files.map(file => {
@@ -180,7 +182,7 @@ module.exports = (app, knex, upload) => {
        })
        .catch(e => {
          res.send({
-           error: 'Error deleting file'
+           error: 'Error deleting file' + e
          })
        })
     })
