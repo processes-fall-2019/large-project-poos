@@ -47,7 +47,7 @@
       </div>
 
       <div class="field">
-        <button class="button is-info"> Send files to database </button>
+        <button :disabled="disable" class="button is-info"> Send files to database </button>
       </div>
     </form>
 
@@ -55,7 +55,6 @@
 </template>
 
 <script>
-// import AuthenticationService from '../services/AuthenticationService'
 import axios from 'axios'
 import { forEach } from 'lodash'
 export default {
@@ -63,7 +62,8 @@ export default {
     return {
       files: [],
       message: "",
-      error: false
+      error: false,
+      disable: false
     }
   },
   components: {
@@ -79,6 +79,7 @@ export default {
     },
 
     async sendFile() {
+      this.disable = true
       const formData = new FormData()
       forEach(this.files, file => {
         formData.append('files', file)
@@ -88,20 +89,6 @@ export default {
       // eslint-disable-next-line
       console.log("The files: ", files)
       this.$root.$emit("files", files)
-      // this.$root.$emit("files", [
-      //   {
-      //     "id": 1,
-      //     "name": "Nudz",
-      //     "recipient": "The boys",
-      //     "date_uploaded": "12/07/2018",
-      //   },
-      //   {
-      //     "id": 2,
-      //     "name": "Vault PIN",
-      //     "recipient": "John Doe",
-      //     "date_uploaded": "04/20/2018",
-      //   }
-      // ])
 
       try {
         await axios.post('/upload', formData)
@@ -112,32 +99,6 @@ export default {
         this.message = err.response.data.error
         this.error = true
       }
-
-
-      // const formData = new FormData()
-      // formData.append('file', this.file)
-      //
-      // // try { // axios.post('/upload', formData)
-      // //   const file = await AuthenticationService.upload({
-      // //     file: this.file,
-      // //     formData: formData,
-      // //   })
-      // //
-      // //   console.log(file);
-      // //
-      // // } catch (e) {
-      // //   console.log(e)
-      // // }
-      //
-      // try {
-      //   await axios.post('/upload', formData)
-      //   this.message = "file has been uploaded"
-      //   this.file = ""
-      //   this.error = false
-      // } catch (error) {
-      //   this.message = "Something went wrong when uploading file"
-      //   this.error = true
-      // }
     }
   }
 }
