@@ -21,5 +21,6 @@ export default {
   color: #2c3e50;
   margin-top: 0;
   background-image: url("background.png");
+  background-size: cover;
 }
 </style>
