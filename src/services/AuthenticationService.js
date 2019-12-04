@@ -16,4 +16,7 @@ export default {
   deleteFile (credentials) {
     return Api().delete('deleteFile', credentials)
   },
+  transferFile (credentials) {
+    return Api().post('transferFile', credentials)
+  },
 }
