@@ -18,6 +18,10 @@
          <!-- <button class="btn btn-primary" @click="openVisitorModal(props.row)">View Details</button> -->
          <button @click="viewFile(props.row)" class="btn btn-primary">View File</button>
        </template>
+       <template slot="transfer_file" slot-scope="props">
+         <!-- <button class="btn btn-primary" @click="openVisitorModal(props.row)">View Details</button> -->
+         <button @click="transferFile(props.row)" class="btn btn-primary">Transfer File</button>
+       </template>
        <template slot="delete_file" slot-scope="props">
          <!-- <button class="btn btn-primary" @click="openVisitorModal(props.row)">View Details</button> -->
          <button @click="deleteFile(props.row)" class="btn btn-danger">Delete</button>
@@ -76,7 +80,7 @@ export default {
         },
       },
       {
-        label: "Intended Recipient",
+        label: "Intended Recipient(s)",
         name: "contact_name",
         filter: {
           type: "simple",
@@ -87,6 +91,10 @@ export default {
       {
         label: "",
         name: "open_modal",
+        sort: false,
+      },{
+        label: "",
+        name: "transfer_file",
         sort: false,
       },{
         label: "",
@@ -145,6 +153,11 @@ export default {
       }
 
       location.reload()
+    },
+    async transferFile (row) {
+      await AuthenticationService.transferFile({
+        data: row
+      })
     },
     viewFile (row) {
       // eslint-disable-next-line
