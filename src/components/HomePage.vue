@@ -1,6 +1,6 @@
 <template>
   <div>
-          <b-navbar toggleable="lg" type="dark" variant="info">
+      <b-navbar toggleable="lg" type="dark" variant="info" sticky>
         <img class="image" src="@/assets/image1.png"/>
         <b-navbar-brand class="title" href="#">&nbsp;Document Drop</b-navbar-brand>
 
@@ -30,11 +30,10 @@
     <br>
     <h1> Welcome </h1>
     <br />
-    <!-- <b-button href="#/" pill variant="danger" class="right">Logout</b-button> -->
     <DropZone/>
     <UploadFile/>
     <FilesTable/>
-    <br><br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br>
   </div>
 </template>
 
