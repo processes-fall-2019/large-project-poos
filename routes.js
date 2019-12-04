@@ -45,6 +45,38 @@ module.exports = (app, knex, upload) => {
   })
 
 
+  app.post('/transferFile', async (req, res) => {
+    // console.log(req.body);
+
+    const sendgrid = require('@sendgrid/mail')
+
+    sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
+
+    const message = {
+      to: 'fhfranco32@gmail.com', //req.body.email,
+      from: 'admin@documentdrop.com',
+      subject: 'You\'ve been sent some secret documents',
+      text: 'here',
+      html: `
+         <p>
+           Hello, You\'ve been sent some secret documents from Document Drop.
+         </p>
+         <p>
+           You can view or download the document by clicking on the link below.
+         </p>
+         <a href=${req.body.data.amazon_url}> Click here to view file </a>
+         `
+    }
+
+    // send the email
+    sendgrid.send(message)
+
+    res.send({
+      data: req.body
+    })
+  })
+
+
   app.post('/login', LoginPolicy.login, async (req, res) => {
      const {username, password} = req.body
      const user = await knex.select().from('users')
