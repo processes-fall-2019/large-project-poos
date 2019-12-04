@@ -1,9 +1,11 @@
 const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy')
 const LoginPolicy = require('./api/policies/LoginPolicy')
+var jwt = require('jsonwebtoken');
 const sharp = require('sharp')
 const fs = require('fs')
 const AWS = require('aws-sdk')
 var userId
+var token
 var files = []
 
 AWS.config.update({
@@ -32,6 +34,17 @@ module.exports = (app, knex, upload) => {
   })
 
 
+  app.post('/verify', async (req, res) => {
+    var decoded = jwt.verify(token, 'shhh')
+
+    // console.log("decoded: ", decoded)
+
+    res.send({
+      payload: decoded
+    })
+  })
+
+
   app.post('/login', LoginPolicy.login, async (req, res) => {
      const {username, password} = req.body
      const user = await knex.select().from('users')
@@ -51,9 +64,18 @@ module.exports = (app, knex, upload) => {
 
      userId = user[0].id
 
+     token = jwt.sign({
+       username: username,
+       password: password,
+       user_id: userId
+     }, 'shhh', { expiresIn: '1h' })
+
+     // console.log("token: ", token);
+
      res.send({
        message: `Hello ${req.body.username}, Welcome back.`,
-       user: user
+       // user: user,
+       Authorization:  `Bearer: ${token}`
      })
    })
 
