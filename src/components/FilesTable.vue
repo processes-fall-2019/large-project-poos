@@ -13,36 +13,58 @@
        <template slot="no-sort-icon">
            <i class="fa fa-sort"></i>
        </template>
-       <!-- <template slot="open_modal" slot-scope="props"> -->
+       <template slot="recipient" slot-scope="props">
+           <input placeholder="Input recipients email" v-model="props.row.contact_name" />
+       </template>
        <template slot="open_modal" slot-scope="props">
-         <!-- <button class="btn btn-primary" @click="openVisitorModal(props.row)">View Details</button> -->
          <button @click="viewFile(props.row)" class="btn btn-primary">View File</button>
        </template>
        <template slot="transfer_file" slot-scope="props">
-         <!-- <button class="btn btn-primary" @click="openVisitorModal(props.row)">View Details</button> -->
-         <button @click="transferFile(props.row)" class="btn btn-primary">Transfer File</button>
+         <button @click="open(props.row)" class="btn btn-primary">Transfer File</button>
        </template>
        <template slot="delete_file" slot-scope="props">
-         <!-- <button class="btn btn-primary" @click="openVisitorModal(props.row)">View Details</button> -->
          <button @click="deleteFile(props.row)" class="btn btn-danger">Delete</button>
        </template>
       </vue-bootstrap4-table>
 
 
       <modal
-      :name="modalName"
-      height="auto"
-      width="1000px"
-      :scrollable="true"
-      @before-open="beforeOpen">
+        :name="modalName"
+        height="auto"
+        width="1000px"
+        :scrollable="true"
+        @before-open="beforeOpen">
 
-      <div>
-        <img :src="fileUrl" />
-      </div>
-
+        <div>
+          <img :src="fileUrl" />
+        </div>
       </modal>
 
 
+      <modal
+        :name="modal2Name"
+        height="auto"
+        width="1000px"
+        :scrollable="true"
+        @before-open="beforeOpen">
+
+        <br />
+        <div>
+          <h4> &nbsp; You are about to send the following file: {{ sendingFile }} </h4>
+          <br />
+          <h4> &nbsp; Intended Recipient: {{ recipient }}  </h4>
+          <br />
+          <h5> &nbsp; Please confirm below</h5>
+          <br />
+          <br />
+
+          &nbsp;&nbsp;&nbsp;<button @click="transferFile()" class="btn btn-success"> Confirm</button>
+          &nbsp;&nbsp;&nbsp;<button @click="close()" class="btn btn-danger"> Cancel </button>
+        </div>
+        <br />
+      </modal>
+
+      <!-- keep counter and keep track of num of files and sedn that to db -->
     </div>
   </div>
 </template>
@@ -56,9 +78,17 @@ export default {
   name: 'FilesTable',
   data () {
     return {
+      form: {
+        rep: []
+      },
+      n: 0,
       userId: 0,
+      row: '',
+      sendingFile: '',
+      recipient: '',
       fileUrl: '',
       modalName: 'files-modal',
+      modal2Name: 'send-modal',
       rows: [],
       columns: [
       {
@@ -80,12 +110,13 @@ export default {
         },
       },
       {
-        label: "Intended Recipient(s)",
-        name: "contact_name",
-        filter: {
-          type: "simple",
-          placeholder: "Search Intended Recipients"
-        },
+        label: "Intended Recipient",
+        // name: "contact_name",
+        name: "recipient",
+        // filter: {
+        //   type: "simple",
+        //   placeholder: "Search Intended Recipients"
+        // },
         sort: true,
       },
       {
@@ -126,6 +157,8 @@ export default {
 
         this.rows = response.data
 
+        // console.log(this.rows);
+
         return response
       } catch (error) {
         this.error = error.response.data.error
@@ -139,8 +172,6 @@ export default {
   },
   methods: {
     async deleteFile (row) {
-      // eslint-disable-next-line
-      // console.log(row);
 
       let del = confirm("Are you sure you want to permanently delete this file?")
 
@@ -154,10 +185,30 @@ export default {
 
       location.reload()
     },
-    async transferFile (row) {
+    async transferFile () {
       await AuthenticationService.transferFile({
-        data: row
+        data: this.row
       })
+      this.$modal.hide('send-modal')
+    },
+    open (row) {
+
+      if (row.contact_name === null || row.contact_name === '') {
+        alert("Please enter a recipient before attemping to transfer a file.")
+        return false
+      }
+
+      this.row = row
+      this.fileUrl = row.amazon_url
+      this.sendingFile = row.name
+      this.recipient = row.contact_name
+
+      // console.log("row", this.row);
+
+      this.$modal.show('send-modal', { row })
+    },
+    close () {
+      this.$modal.hide('send-modal')
     },
     viewFile (row) {
       // eslint-disable-next-line
@@ -165,7 +216,7 @@ export default {
 
       this.fileUrl = row.amazon_url
 
-      this.$modal.show('files-modal', { row })
+      this.$modal.show('files-modal')
 
       // window.location.href = row.amazon_url;
     },
