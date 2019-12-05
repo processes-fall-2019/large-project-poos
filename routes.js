@@ -51,9 +51,10 @@ module.exports = (app, knex, upload) => {
     const sendgrid = require('@sendgrid/mail')
 
     sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
+    console.log("here", process.env.SENDGRID_API_KEY);
 
     const message = {
-      to: 'fhfranco32@gmail.com', //req.body.email,
+      to: req.body.data.contact_name,
       from: 'admin@documentdrop.com',
       subject: 'You\'ve been sent some secret documents',
       text: 'here',
@@ -75,6 +76,27 @@ module.exports = (app, knex, upload) => {
       data: req.body
     })
   })
+
+
+  // app.post('/bulkFileTransfer', async (req, res) => {
+  //   const sendgrid = require('@sendgrid/mail')
+  //
+  //   sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
+  //
+  //   const message = {
+  //     to: 'fhfranco32@gmail.com', //req.body.email,
+  //     from: 'admin@documentdrop.com',
+  //     subject: 'You\'ve been sent some secret documents',
+  //     text: 'here',
+  //   }
+  //
+  //   // send the email
+  //   sendgrid.send(message)
+  //
+  //   res.send({
+  //     data: req.body
+  //   })
+  // })
 
 
   app.post('/login', LoginPolicy.login, async (req, res) => {
