@@ -153,7 +153,7 @@ export default {
         })
 
         // eslint-disable-next-line
-        console.log('the resssssy', response)
+        // console.log('the resssssy', response)
 
         this.rows = response.data
 
@@ -212,7 +212,7 @@ export default {
     },
     viewFile (row) {
       // eslint-disable-next-line
-      console.log(row);
+      // console.log(row);
 
       this.fileUrl = row.amazon_url
 
