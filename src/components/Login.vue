@@ -29,11 +29,14 @@
         <form class="login border border-dark p-5">
           <p class="h1 mb-4">Login</p>
           <br />
+          <b-alert v-model="loginFlag" variant="danger" @dismissed="loginFlag=false" dismissible>
+              Invalid login credentials
+            </b-alert>   
           <!-- Email -->
           <input type="" class="form-control mb-4" placeholder="Username" v-model="username">
           <!-- Password -->
           <input type="password" class="form-control mb-4" placeholder="Password" v-model="password">
-          <div class="error" v-html="error"/>
+          <div v-if="missingInfo" class="error" v-html="error"/>
           <br />
           <div class="d-flex justify-content-around">
               <div>
@@ -69,6 +72,8 @@
   export default {
     data () {
       return {
+        missingInfo: false,
+        loginFlag: false,
         username: '',
         password: '',
         error: null,
@@ -77,6 +82,7 @@
     methods: {
       async login () {
         // eslint-disable-next-line
+        this.missingInfo = false;
         console.log('hi')
         try {
           const response = await AuthenticationService.login({
@@ -87,7 +93,9 @@
           console.log('res', response)
           // this.$root.$emit('userId', response.data.user[0].id)
           if (response.data.error) {
-            alert('User does not exist.')
+            //alert('User does not exist.')
+            this.loginFlag = true;
+            this.missingInfo = false;
             return false
           }
           // this.$store.dispatch('setUser', response.data.user)
@@ -99,6 +107,8 @@
         } catch (error) {
           // eslint-disable-next-line
           console.log('Error logging in.')
+          this.missingInfo = true;
+          this.loginFlag = false;
           this.error = error.response.data.error
         }
       },
