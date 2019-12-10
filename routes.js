@@ -37,7 +37,7 @@ module.exports = (app, knex, upload) => {
   app.post('/verify', async (req, res) => {
     var decoded = jwt.verify(token, 'shhh')
 
-    // console.log("decoded: ", decoded)
+    console.log("decoded: ", decoded)
 
     res.send({
       payload: decoded
@@ -142,7 +142,7 @@ module.exports = (app, knex, upload) => {
        user_id: userId
      }, 'shhh', { expiresIn: '1h' })
 
-     // console.log("token: ", token);
+     console.log("token: ", token);
 
      res.send({
        message: `Hello ${req.body.username}, Welcome back.`,
