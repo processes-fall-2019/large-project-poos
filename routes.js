@@ -35,13 +35,19 @@ module.exports = (app, knex, upload) => {
 
 
   app.post('/verify', async (req, res) => {
-    var decoded = jwt.verify(token, 'shhh')
+    try {
+      var decoded = jwt.verify(token, 'shhh')
 
-    console.log("decoded: ", decoded)
+      console.log("decoded: ", decoded)
 
-    res.send({
-      payload: decoded
-    })
+      res.send({
+        payload: decoded
+      })
+    } catch (e) {
+      res.send({
+        error: 'Authentication error: ' + e
+      })
+    }
   })
 
 
