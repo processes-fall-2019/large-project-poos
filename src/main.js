@@ -3,6 +3,7 @@ import App from './App.vue'
 import router from './router/index'
 import BootstrapVue from 'bootstrap-vue'
 import VModal from 'vue-js-modal'
+import CircularCountDownTimer from 'vue-circular-count-down-timer'
 import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 
@@ -12,6 +13,7 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 
 Vue.use(BootstrapVue)
 Vue.use(VModal)
+Vue.use(CircularCountDownTimer)
 
 Vue.config.productionTip = false
 
