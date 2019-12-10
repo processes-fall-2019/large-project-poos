@@ -19,4 +19,7 @@ export default {
   transferFile (credentials) {
     return Api().post('transferFile', credentials)
   },
+  verify (credentials) {
+    return Api().post('verify', credentials)
+  },
 }
