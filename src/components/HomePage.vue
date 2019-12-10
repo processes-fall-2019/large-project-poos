@@ -14,7 +14,7 @@
               <template v-slot:button-content>
                 <em>User</em>
               </template>
-              <b-dropdown-item href="#/homepage">Verify</b-dropdown-item>
+              <b-dropdown-item @click="updateCountdown()">Verify</b-dropdown-item>
               <b-dropdown-item href="#/">Sign Out</b-dropdown-item>
             </b-nav-item-dropdown>
           </b-navbar-nav>
@@ -44,7 +44,10 @@
       :show-minute="true"
       :show-hour="true"
       :show-negatives="true"
-      :notify-every="'minute'"
+      :notify-every="'second'"
+      ref="countdown"
+      @finish="finished"
+      @update="updated"
     ></circular-count-down-timer>
 
     <br />
@@ -59,6 +62,7 @@
 import UploadFile from './UploadFile'
 import FilesTable from './FilesTable'
 import AuthenticationService from '../services/AuthenticationService'
+import Timer from '../services/timer.js'
 // import DropZone from './DropZone'
 
 export default {
@@ -69,35 +73,38 @@ export default {
   },
   data () {
     return {
-      timer: 86400
+      timer: Timer,
+      status: ''
     }
   },
   methods: {
+    finished () {
+      // eslint-disable-next-line
+        console.log('finished');
+    },
+    updated (status) {
+        this.status = 86400 - status.value
+    },
+    async updateCountdown () {
+        this.$refs.countdown.updateTime(this.status)
+
+        const response = await AuthenticationService.verify({
+        })
+
+        // eslint-disable-next-line
+        console.log("response", response)
+
+        // eslint-disable-next-line
+        let time = (response.data.payload.exp - response.data.payload.iat)
+
+        let expDate = new Date(response.data.payload.exp * 1000)
+
+        // eslint-disable-next-line
+        console.log("expires at: ", expDate)
+
+    }
   },
   async mounted () {
-    try {
-      const response = await AuthenticationService.verify({
-      })
-
-      // eslint-disable-next-line
-      console.log("response", response);
-
-      let time = (response.data.payload.exp - response.data.payload.iat)
-
-      let expDate = new Date(response.data.payload.exp * 1000)
-
-      this.timer = time
-
-      // eslint-disable-next-line
-      console.log(expDate);
-
-      // eslint-disable-next-line
-      console.log("time", time);
-
-    } catch (e) {
-      // eslint-disable-next-line
-      console.log(e);
-    }
   }
 }
 </script>
@@ -107,11 +114,11 @@ export default {
   .error {
     color: red;
   }
-    .title{
+  .title {
     margin-top: 1.5%;
     font-size: 180%;
   }
-  .image{
+  .image {
     margin-top: 0;
     height: 5%;
     width: 5%;
