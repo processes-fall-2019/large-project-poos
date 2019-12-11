@@ -1,10 +1,9 @@
-const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy');
-const bcrypt = require('bcrypt');
-const LoginPolicy = require('./api/policies/LoginPolicy');
+const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy')
+const LoginPolicy = require('./api/policies/LoginPolicy')
 var jwt = require('jsonwebtoken');
-const sharp = require('sharp');
-const fs = require('fs');
-const AWS = require('aws-sdk');
+const sharp = require('sharp')
+const fs = require('fs')
+const AWS = require('aws-sdk')
 var userId
 var token
 var files = []
@@ -16,13 +15,11 @@ AWS.config.update({
 
 module.exports = (app, knex, upload) => {
   app.post('/register', AuthenticationControllerPolicy.register, async (req, res) => {
-
-    bcrypt.hash(req.body.password, 8, function(err, hash) {
-      knex('users')
+    (await knex('users')
       .insert({
         user_name: req.body.username,
         email: req.body.email,
-        password: hash
+        password: req.body.password
       })
       .then(function () {
         res.send({
@@ -33,9 +30,29 @@ module.exports = (app, knex, upload) => {
         res.send({
           error: 'This email/username is already in use.' + e
         })
-      })
+      }))
   })
-})
+
+  app.post('/verifyEmail', async (req, res) => {
+    const user = await knex.select().from('users')
+    .where({ email: req.body.email })
+    .then()
+    .catch(e => {
+      return res.send({
+        error: 'Email not in use'
+      })
+    })
+    if (user.length === 0){
+      return res.send({
+        error: 'email not found.'
+      })
+    }
+    else {
+      res.send({
+        message: 'email in use'
+      })
+    }
+  })
 
 
   app.post('/verify', async (req, res) => {
@@ -43,6 +60,12 @@ module.exports = (app, knex, upload) => {
       var decoded = jwt.verify(token, 'shhh')
 
       console.log("decoded: ", decoded)
+
+      // token = jwt.sign({
+      //   username: username,
+      //   password: password,
+      //   user_id: userId
+      // }, 'shhh', { expiresIn: '1h' })
 
       res.send({
         payload: decoded
@@ -106,33 +129,54 @@ module.exports = (app, knex, upload) => {
   })
 
 
-  // app.post('/bulkFileTransfer', async (req, res) => {
-  //   const sendgrid = require('@sendgrid/mail')
-  //
-  //   sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
-  //
-  //   const message = {
-  //     to: 'fhfranco32@gmail.com', //req.body.email,
-  //     from: 'admin@documentdrop.com',
-  //     subject: 'You\'ve been sent some secret documents',
-  //     text: 'here',
-  //   }
-  //
-  //   // send the email
-  //   sendgrid.send(message)
-  //
-  //   res.send({
-  //     data: req.body
-  //   })
-  // })
+  app.post('/bulkFileTransfer', async (req, res) => {
+
+    try {
+      const sendgrid = require('@sendgrid/mail')
+
+      sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
+
+      console.log(req.body);
+
+      // let x = req.body.data.filter(x => x.contact_name != null)
+      // let emailList = x.map(file => file.contact_name)
+      // console.log(emailList);
+
+      const message = {
+        to: req.body.data.contact_name,
+        from: 'admin@documentdrop.com',
+        subject: 'You\'ve been sent some secret documents',
+        text: 'here',
+        html: `
+           <p>
+             Hello, You\'ve been sent some secret documents from Document Drop.
+           </p>
+           <p>
+             You can view or download the document by clicking on the link below.
+           </p>
+           <a href=${req.body.data.amazon_url}> Click here to view file </a>
+           `
+      }
+
+      // send the email
+      sendgrid.send(message)
+
+      res.send({
+        data: req.body
+      })
+    } catch (e) {
+      res.send({
+        error: e
+      })
+    }
+
+  })
 
 
   app.post('/login', LoginPolicy.login, async (req, res) => {
      const {username, password} = req.body
-     let local_id = 0
-     bcrypt.hash(req.body.password, 8, async function(err, hash) {
      const user = await knex.select().from('users')
-       .where({ user_name: username, password: hash })
+       .where({ user_name: username, password: password })
        .then()
        .catch(e => {
          res.send({
@@ -146,9 +190,8 @@ module.exports = (app, knex, upload) => {
        })
      }
 
-     local_id = user[0].id
-    })
-    userId = local_id
+     userId = user[0].id
+
      token = jwt.sign({
        username: username,
        password: password,
