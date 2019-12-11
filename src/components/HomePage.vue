@@ -102,7 +102,7 @@ export default {
         })
     },
     updated (status) {
-        this.status = 300 - status.value
+        this.status = 120 - status.value
     },
     async updateCountdown () {
         this.$refs.countdown.updateTime(this.status)
