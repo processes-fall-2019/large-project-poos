@@ -33,6 +33,81 @@ module.exports = (app, knex, upload) => {
       }))
   })
 
+  app.post('/changePassword', async (req, res) => {
+    const user = await knex.select().from('users')
+    .where({ email: req.body.email })
+    .update({
+        password: req.body.password
+      })
+      .then()
+      .catch(e => {
+        res.send({
+          error: 'Error when fetching user from database.' + e
+        })
+      })
+
+    if (user.length === 0) {
+      return res.send({
+        error: 'User not found.'
+      })
+    }
+  })
+
+  app.post('/verifyEmail', async (req, res) => {
+    const user = await knex.select().from('users')
+    .where({ email: req.body.email })
+    .then()
+    .catch(e => {
+      return res.send({
+        error: 'Email not in use'
+      })
+    })
+    if (user.length === 0){
+      return res.send({
+        error: 'email not found.'
+      })
+    }
+    else {
+      res.send({
+        message: 'email in use'
+      })
+    }
+  })
+
+  app.post('/emailCode', async (req, res) => {
+    // console.log(req.body);
+
+    const sendgrid = require('@sendgrid/mail')
+
+    sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
+
+    const message = {
+      to: req.body.email, // TODO: also make this go to database for future use
+      from: 'admin@documentdrop.com',
+      subject: 'Document Drop Reset Password',
+      text: 'here',
+      html: `
+         <p>
+           You have requested to reset your password, here is the code: ${req.body.code}
+         </p>
+         `
+    }
+  
+    // send the email
+    sendgrid.send(message)
+
+    // .catch(e => {
+    //   res.send({
+    //     error: 'Error emailing user'
+    //   })
+    // })
+    
+    res.send({
+      data: req.body,
+      message: message
+    })
+  })
+
 
   app.post('/verify', async (req, res) => {
     try {
