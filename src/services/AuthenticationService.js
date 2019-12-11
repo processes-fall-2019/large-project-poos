@@ -7,6 +7,9 @@ export default {
   login (credentials) {
     return Api().post('login', credentials)
   },
+  verifyEmail (credentials) {
+    return Api().post('verifyEmail', credentials)
+  },
   upload (credentials) {
     return Api().post('upload', credentials)
   },
