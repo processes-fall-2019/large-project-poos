@@ -85,6 +85,7 @@ export default {
         console.log('finished', this.files);
 
         for (let i in this.files) {
+          // eslint-disable-next-line
           console.log(this.files[i]);
 
           await AuthenticationService.bulkFileTransfer({
@@ -96,12 +97,12 @@ export default {
         //   data: this.emailList
         // })
         //
-        // this.$router.push({
-        //   name: 'login'
-        // })
+        this.$router.push({
+          name: 'login'
+        })
     },
     updated (status) {
-        this.status = 10 - status.value
+        this.status = 300 - status.value
     },
     async updateCountdown () {
         this.$refs.countdown.updateTime(this.status)

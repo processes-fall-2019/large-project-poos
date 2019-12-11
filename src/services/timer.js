@@ -6,7 +6,7 @@ function timer () {
 
   Promise.resolve(res)
 
-  let time = 10 // 300
+  let time = 300
 
   return time
 }
