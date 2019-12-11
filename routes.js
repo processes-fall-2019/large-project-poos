@@ -129,6 +129,7 @@ module.exports = (app, knex, upload) => {
 
   app.post('/login', LoginPolicy.login, async (req, res) => {
      const {username, password} = req.body
+     let local_id = 0
      bcrypt.hash(req.body.password, 8, async function(err, hash) {
      const user = await knex.select().from('users')
        .where({ user_name: username, password: hash })
@@ -145,9 +146,9 @@ module.exports = (app, knex, upload) => {
        })
      }
 
-     userId = user[0].id
-     console.log()
+     local_id = user[0].id
     })
+    userId = local_id
      token = jwt.sign({
        username: username,
        password: password,
