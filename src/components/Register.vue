@@ -32,7 +32,6 @@
 
         <b-alert v-model="dupUser" variant="danger" @dismissed="dupUser=false" dismissible>
             email is already in use <br>
-            <a href="">Forgot password?</a>
           </b-alert>
         <!-- Username -->
         <input type="" class="form-control mb-4" placeholder="Username" v-model="username">
@@ -53,7 +52,7 @@
         </router-link>
       </form>
     </b-container>
-    <br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br><br><br><br><br><br>
   </div>
 </template>
 
@@ -93,7 +92,7 @@ export default {
         this.$router.push({
             name: 'login'
         })
-        alert('Hello ' + this.username + ' your user was successfully registered!')
+        // alert('Hello ' + this.username + ' your user was successfully registered!')
       } catch (error) {
         // eslint-disable-next-line
         console.log('Error registering.')
