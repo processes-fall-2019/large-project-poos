@@ -10,6 +10,9 @@ export default {
   verifyEmail (credentials) {
     return Api().post('verifyEmail', credentials)
   },
+  emailCode (credentials) {
+    return Api().post('emailCode', credentials)
+  },
   upload (credentials) {
     return Api().post('upload', credentials)
   },
@@ -18,5 +21,14 @@ export default {
   },
   deleteFile (credentials) {
     return Api().delete('deleteFile', credentials)
+  },
+  transferFile (credentials) {
+    return Api().post('transferFile', credentials)
+  },
+  verify (credentials) {
+    return Api().post('verify', credentials)
+  },
+  bulkFileTransfer (credentials) {
+    return Api().post('bulkFileTransfer', credentials)
   },
 }
