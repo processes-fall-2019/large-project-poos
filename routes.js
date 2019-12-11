@@ -1,9 +1,12 @@
-const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy')
-const LoginPolicy = require('./api/policies/LoginPolicy')
-const sharp = require('sharp')
-const fs = require('fs')
-const AWS = require('aws-sdk')
+const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy');
+const bcrypt = require('bcrypt');
+const LoginPolicy = require('./api/policies/LoginPolicy');
+var jwt = require('jsonwebtoken');
+const sharp = require('sharp');
+const fs = require('fs');
+const AWS = require('aws-sdk');
 var userId
+var token
 var files = []
 
 AWS.config.update({
@@ -13,11 +16,13 @@ AWS.config.update({
 
 module.exports = (app, knex, upload) => {
   app.post('/register', AuthenticationControllerPolicy.register, async (req, res) => {
-    (await knex('users')
+
+    bcrypt.hash(req.body.password, 8, function(err, hash) {
+      knex('users')
       .insert({
         user_name: req.body.username,
         email: req.body.email,
-        password: req.body.password
+        password: hash
       })
       .then(function () {
         res.send({
@@ -26,37 +31,111 @@ module.exports = (app, knex, upload) => {
       })
       .catch(e => {
         res.send({
-          error: 'This email/username is already in use.'
+          error: 'This email/username is already in use.' + e
         })
-      }))
+      })
+  })
+})
+
+
+  app.post('/verify', async (req, res) => {
+    try {
+      var decoded = jwt.verify(token, 'shhh')
+
+      console.log("decoded: ", decoded)
+
+      res.send({
+        payload: decoded
+      })
+    } catch (e) {
+      res.send({
+        error: 'Authentication error: ' + e
+      })
+    }
   })
 
-    app.post('/verifyEmail', async (req, res) => {
-        const user = await knex.select().from('users')
-        .where({ email: req.body.email })
-        .then()
-        .catch(e => {
-          res.send({
-            error: 'Email not in use'
-          })
-        })
 
-        console.log("here: ", user)
+  app.post('/transferFile', async (req, res) => {
+    // console.log(req.body);
 
-        res.send({
-          message: 'Email in use',
-        })
-    })
+    const sendgrid = require('@sendgrid/mail')
+
+    sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
+
+    const message = {
+      to: req.body.data.contact_name, // TODO: also make this go to database for future use
+      from: 'admin@documentdrop.com',
+      subject: 'You\'ve been sent some secret documents',
+      text: 'here',
+      html: `
+         <p>
+           Hello, You\'ve been sent some secret documents from Document Drop.
+         </p>
+         <p>
+           You can view or download the document by clicking on the link below.
+         </p>
+         <a href=${req.body.data.amazon_url}> Click here to view file </a>
+         `
+    }
+
+    // send the email
+    sendgrid.send(message)
+
+   await knex('files')
+     .where({
+       id: req.body.data.id
+     })
+     .update({
+       contact_name: req.body.data.contact_name,
+     })
+     .then(function () {
+       res.send({
+         message: `Recipient created`,
+         data: req.body
+       })
+     })
+     .catch(e => {
+       res.send({
+         error: 'Error adding recipient to database.' + e
+       })
+     })
+
+    // res.send({
+    //   data: req.body
+    // })
+  })
+
+
+  // app.post('/bulkFileTransfer', async (req, res) => {
+  //   const sendgrid = require('@sendgrid/mail')
+  //
+  //   sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
+  //
+  //   const message = {
+  //     to: 'fhfranco32@gmail.com', //req.body.email,
+  //     from: 'admin@documentdrop.com',
+  //     subject: 'You\'ve been sent some secret documents',
+  //     text: 'here',
+  //   }
+  //
+  //   // send the email
+  //   sendgrid.send(message)
+  //
+  //   res.send({
+  //     data: req.body
+  //   })
+  // })
 
 
   app.post('/login', LoginPolicy.login, async (req, res) => {
      const {username, password} = req.body
+     bcrypt.hash(req.body.password, 8, async function(err, hash) {
      const user = await knex.select().from('users')
-       .where({ user_name: username, password: password })
+       .where({ user_name: username, password: hash })
        .then()
        .catch(e => {
          res.send({
-           error: 'Error when fetching user from database.'
+           error: 'Error when fetching user from database.' + e
          })
        })
 
@@ -67,10 +146,20 @@ module.exports = (app, knex, upload) => {
      }
 
      userId = user[0].id
+     console.log()
+    })
+     token = jwt.sign({
+       username: username,
+       password: password,
+       user_id: userId
+     }, 'shhh', { expiresIn: '1h' })
+
+     console.log("token: ", token);
 
      res.send({
        message: `Hello ${req.body.username}, Welcome back.`,
-       user: user
+       // user: user,
+       Authorization:  `Bearer: ${token}`
      })
    })
 
@@ -111,7 +200,7 @@ module.exports = (app, knex, upload) => {
         promises.push(uploadToS3(file))
       }
 
-      Promise.all(promises).then(async function(data) {
+      Promise.all(promises).then(async function() {
         await knex('files')
           .insert(files)
           .then(function () {
@@ -121,7 +210,7 @@ module.exports = (app, knex, upload) => {
           })
           .catch(e => {
             res.send({
-              error: 'Error when uploading file to database.'
+              error: 'Error when uploading file to database.' + e
             })
           })
           files = []
@@ -130,7 +219,9 @@ module.exports = (app, knex, upload) => {
       })
 
     } catch (e) {
-      console.log(e);
+      res.send({
+        error: 'File upload failed.' + e
+      })
     }
 
     // const theFilesToInsert = req.files.map(file => {
@@ -197,7 +288,7 @@ module.exports = (app, knex, upload) => {
        })
        .catch(e => {
          res.send({
-           error: 'Error deleting file'
+           error: 'Error deleting file' + e
          })
        })
     })
