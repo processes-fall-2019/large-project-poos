@@ -31,7 +31,7 @@
         <br />
         <b-alert v-model="loginFlag" variant="danger" @dismissed="loginFlag=false" dismissible>
             Invalid login credentials
-        </b-alert>   
+        </b-alert>
         <!-- Email -->
         <input type="" class="form-control mb-4" placeholder="Username" v-model="username">
         <!-- Password -->
@@ -39,31 +39,24 @@
         <div v-if="missingInfo" class="error" v-html="error"/>
         <br />
         <div class="d-flex justify-content-around">
-            <div>
-                <!-- Remember me -->
-                <div class="custom-control custom-checkbox">
-                    <input type="checkbox" class="custom-control-input" id="defaultLoginFormRemember">
-                    <label class="custom-control-label" for="defaultLoginFormRemember">Remember me</label>
-                </div>
-            </div>
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
           <!-- Forgot Password Modal-->
           <div>
               <b-button variant="link" v-b-modal.modal-1 >Forgot password?</b-button>
               <b-modal ref = "modal-1" id="modal-1" title="Email Verification">
                 <p class="my-4">Please verify your email</p>
-                <!-- not found alert--> 
+                <!-- not found alert-->
                 <b-alert v-model="alertBool2" variant="danger" @dismissed="alertBool2=false" dismissible>
                   Email is not in use
-                </b-alert>  
+                </b-alert>
                 <input type="" class="form-control mb-4" placeholder="Email" v-model="email">
                 <button @click="verify" class="btn btn-info btn-block my-4" type="submit">Verify</button>
-                <!-- found alert--> 
+                <!-- found alert-->
                 <b-alert v-model="alertBool" variant="info" @dismissed="alertBool=false" dismissible>
                         Email was verified, reset code was sent
                         <input type="" class="form-control mb-4" placeholder="enter code" v-model="userCode">
                         <button @click="resetCode" class="btn btn-info btn-block my-4" type="submit">submit</button>
-                </b-alert>  
+                </b-alert>
                 <!-- resetting password -->
                 <div v-if = "successfulCode">
                   Enter your new password
@@ -111,6 +104,7 @@ export default {
   methods: {
     resetCode (){
       this.alertBool=false
+      // eslint-disable-next-line
       console.log(this.userCode, this.storedCode)
       if(this.userCode == this.storedCode)
           this.successfulCode = true
@@ -123,7 +117,7 @@ export default {
       this.successfulCode = false
       try{
         const response = await AuthenticationService.changePassword({
-          email: this.email,  
+          email: this.email,
           password: this.password
       })
       if (response.data.error) {
@@ -132,13 +126,13 @@ export default {
         }
       }
       catch(error){
-      this.error = error.response.data.error   
+      this.error = error.response.data.error
     }
     },
     async verify (){
     try{
       const response = await AuthenticationService.verifyEmail({
-          email: this.email  
+          email: this.email
       })
       if (response.data.error) {
           this.alertBool2 = true;
@@ -152,19 +146,21 @@ export default {
       this.sendCode();
     }
     catch(error){
-      this.error = error.response.data.error   
+      this.error = error.response.data.error
     }
     },
-    
+
     async sendCode(){
+      // eslint-disable-next-line
       console.log('calling sendCode')
     try{
-      const response = await AuthenticationService.emailCode({
+      await AuthenticationService.emailCode({
         email: this.email,
         code: this.storedCode
       })
     }
     catch(error){
+      // eslint-disable-next-line
       console.log('caught an error in sendCode()')
       this.error = error.response.data.error
     }
