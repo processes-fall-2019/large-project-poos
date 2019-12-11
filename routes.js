@@ -1,10 +1,9 @@
-const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy');
-const bcrypt = require('bcrypt');
-const LoginPolicy = require('./api/policies/LoginPolicy');
+const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy')
+const LoginPolicy = require('./api/policies/LoginPolicy')
 var jwt = require('jsonwebtoken');
-const sharp = require('sharp');
-const fs = require('fs');
-const AWS = require('aws-sdk');
+const sharp = require('sharp')
+const fs = require('fs')
+const AWS = require('aws-sdk')
 var userId
 var token
 var files = []
@@ -16,13 +15,11 @@ AWS.config.update({
 
 module.exports = (app, knex, upload) => {
   app.post('/register', AuthenticationControllerPolicy.register, async (req, res) => {
-
-    bcrypt.hash(req.body.password, 8, function(err, hash) {
-      knex('users')
+    (await knex('users')
       .insert({
         user_name: req.body.username,
         email: req.body.email,
-        password: hash
+        password: req.body.password
       })
       .then(function () {
         res.send({
@@ -33,9 +30,8 @@ module.exports = (app, knex, upload) => {
         res.send({
           error: 'This email/username is already in use.' + e
         })
-      })
+      }))
   })
-})
 
 
   app.post('/verify', async (req, res) => {
@@ -129,9 +125,8 @@ module.exports = (app, knex, upload) => {
 
   app.post('/login', LoginPolicy.login, async (req, res) => {
      const {username, password} = req.body
-     bcrypt.hash(req.body.password, 8, async function(err, hash) {
      const user = await knex.select().from('users')
-       .where({ user_name: username, password: hash })
+       .where({ user_name: username, password: password })
        .then()
        .catch(e => {
          res.send({
@@ -146,8 +141,7 @@ module.exports = (app, knex, upload) => {
      }
 
      userId = user[0].id
-     console.log()
-    })
+
      token = jwt.sign({
        username: username,
        password: password,
