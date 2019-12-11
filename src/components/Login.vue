@@ -31,7 +31,7 @@
           <br />
           <b-alert v-model="loginFlag" variant="danger" @dismissed="loginFlag=false" dismissible>
               Invalid login credentials
-            </b-alert>   
+          </b-alert>   
           <!-- Email -->
           <input type="" class="form-control mb-4" placeholder="Username" v-model="username">
           <!-- Password -->
@@ -47,10 +47,32 @@
                   </div>
               </div>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-              <div>
-                  <!-- Forgot password -->
-                  <a href="">Forgot password?</a>
-              </div>
+            <!-- Forgot Password -->
+            <div>
+                <b-button variant="link" v-b-modal.modal-1 ok-variant-danger>Forgot password?</b-button>
+                <b-modal ref = "modal-1" id="modal-1" title="Email Verification">
+                  <p class="my-4">Please verify your email</p>
+                  <!-- not found alert--> 
+                  <b-alert v-model="alertBool2" variant="danger" @dismissed="alertBool2=false" dismissible>
+                    Email is not in use
+                  </b-alert>  
+                  <input type="" class="form-control mb-4" placeholder="Email" v-model="email">
+                  <button @click="verify" class="btn btn-info btn-block my-4" type="submit">Verify</button>
+                  <!-- found alert--> 
+                  <b-alert v-model="alertBool" variant="info" @dismissed="alertBool=false" dismissible>
+                          Email was verified, reset code was sent
+                          <input type="" class="form-control mb-4" placeholder="enter code" v-model="userCode">
+                          <button @click="resetCode" class="btn btn-info btn-block my-4" type="submit">submit</button>
+                  </b-alert>  
+                  <div v-if = "successfulCode">
+                    Enter your new password
+                    <input type="password" class="form-control mb-4" placeholder="" v-model="password">
+                    <button @click="changePassword" class="btn btn-info btn-block my-4" type="submit">submit</button>
+                  </div>
+                  <div class="error" v-html="error"/>
+                  <div slot="modal-footer"></div>
+                </b-modal>
+            </div>
           </div>
           <br />
           <br />
@@ -72,6 +94,12 @@
   export default {
     data () {
       return {
+        successfulCode: false,
+        userCode: '',
+        storedCode: '15',
+        email: '',
+        alertBool2: false,
+        alertBool: false,
         missingInfo: false,
         loginFlag: false,
         username: '',
@@ -80,10 +108,44 @@
       }
     },
     methods: {
+      resetCode (){
+        this.alertBool=false
+        if(this.userCode === this.storedCode)
+            this.successfulCode = true
+        else
+            this.successfulCode = false
+      },
+
+      async changePassword(){
+        // TODO: overwrite current password with this.password
+        this.$refs['modal-1'].hide()
+      },
+
+      async verify (){
+      try{
+        const response = await AuthenticationService.verifyEmail({
+            email: this.email  
+        })
+        if (response.data.error) {
+          // TODO: email this.storedCode to user
+            this.alertBool2 = true;
+            this.alertBool = false;
+            return false
+          }
+        this.alertBool = true;
+        this.alertBool2 = false;
+        //this.storedCode = Math.random() * 10000000000000000;
+        this.$router.push({
+            name: 'login'
+          })  
+      }
+      catch(error){
+        this.error = error.response.data.error   
+      }
+      },
       async login () {
         // eslint-disable-next-line
         this.missingInfo = false;
-        console.log('hi')
         try {
           const response = await AuthenticationService.login({
             username: this.username,
