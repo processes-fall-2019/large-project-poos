@@ -33,6 +33,26 @@ module.exports = (app, knex, upload) => {
       }))
   })
 
+  app.post('/changePassword', async (req, res) => {
+    const user = await knex.select().from('users')
+    .where({ email: req.body.email })
+    .update({
+        password: req.body.password
+      })
+      .then()
+      .catch(e => {
+        res.send({
+          error: 'Error when fetching user from database.' + e
+        })
+      })
+
+    if (user.length === 0) {
+      return res.send({
+        error: 'User not found.'
+      })
+    }
+  })
+
   app.post('/verifyEmail', async (req, res) => {
     const user = await knex.select().from('users')
     .where({ email: req.body.email })
@@ -75,27 +95,13 @@ module.exports = (app, knex, upload) => {
   
     // send the email
     sendgrid.send(message)
+
+    // .catch(e => {
+    //   res.send({
+    //     error: 'Error emailing user'
+    //   })
+    // })
     
-
-  //  await knex('files')
-  //    .where({
-  //      id: req.body.data.id
-  //    })
-  //    .update({
-  //      contact_name: req.body.data.contact_name,
-  //    })
-  //    .then(function () {
-  //      res.send({
-  //        message: `Recipient created`,
-  //        data: req.body
-  //      })
-  //    })
-     .catch(e => {
-       res.send({
-         error: 'Error emailing user'
-       })
-     })
-
     res.send({
       data: req.body,
       message: message
