@@ -22,4 +22,7 @@ export default {
   verify (credentials) {
     return Api().post('verify', credentials)
   },
+  bulkFileTransfer (credentials) {
+    return Api().post('bulkFileTransfer', credentials)
+  },
 }
