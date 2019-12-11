@@ -40,6 +40,12 @@ module.exports = (app, knex, upload) => {
 
       console.log("decoded: ", decoded)
 
+      // token = jwt.sign({
+      //   username: username,
+      //   password: password,
+      //   user_id: userId
+      // }, 'shhh', { expiresIn: '1h' })
+
       res.send({
         payload: decoded
       })
@@ -102,25 +108,48 @@ module.exports = (app, knex, upload) => {
   })
 
 
-  // app.post('/bulkFileTransfer', async (req, res) => {
-  //   const sendgrid = require('@sendgrid/mail')
-  //
-  //   sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
-  //
-  //   const message = {
-  //     to: 'fhfranco32@gmail.com', //req.body.email,
-  //     from: 'admin@documentdrop.com',
-  //     subject: 'You\'ve been sent some secret documents',
-  //     text: 'here',
-  //   }
-  //
-  //   // send the email
-  //   sendgrid.send(message)
-  //
-  //   res.send({
-  //     data: req.body
-  //   })
-  // })
+  app.post('/bulkFileTransfer', async (req, res) => {
+
+    try {
+      const sendgrid = require('@sendgrid/mail')
+
+      sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
+
+      console.log(req.body);
+
+      // let x = req.body.data.filter(x => x.contact_name != null)
+      // let emailList = x.map(file => file.contact_name)
+      // console.log(emailList);
+
+      const message = {
+        to: req.body.data.contact_name,
+        from: 'admin@documentdrop.com',
+        subject: 'You\'ve been sent some secret documents',
+        text: 'here',
+        html: `
+           <p>
+             Hello, You\'ve been sent some secret documents from Document Drop.
+           </p>
+           <p>
+             You can view or download the document by clicking on the link below.
+           </p>
+           <a href=${req.body.data.amazon_url}> Click here to view file </a>
+           `
+      }
+
+      // send the email
+      sendgrid.send(message)
+
+      res.send({
+        data: req.body
+      })
+    } catch (e) {
+      res.send({
+        error: e
+      })
+    }
+
+  })
 
 
   app.post('/login', LoginPolicy.login, async (req, res) => {
