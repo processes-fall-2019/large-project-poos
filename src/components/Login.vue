@@ -96,8 +96,8 @@
     data () {
       return {
         successfulCode: false,
-        userCode: '',
-        storedCode: '15',
+        userCode: 0,
+        storedCode: 0,
         email: '',
         alertBool2: false,
         alertBool: false,
@@ -111,7 +111,8 @@
     methods: {
       resetCode (){
         this.alertBool=false
-        if(this.userCode === this.storedCode)
+        console.log(this.userCode, this.storedCode)
+        if(this.userCode == this.storedCode)
             this.successfulCode = true
         else
             this.successfulCode = false
@@ -121,6 +122,20 @@
         // TODO: overwrite current password with this.password
         this.$refs['modal-1'].hide()
         this.successfulCode = false
+        try{
+          const response = await AuthenticationService.changePassword({
+            email: this.email,  
+            password: this.password
+        })
+        if (response.data.error) {
+            alert(response.data.error)
+            return false
+          }
+        }
+        catch(error){
+        this.error = error.response.data.error   
+      }
+
       },
 
       async verify (){
@@ -136,11 +151,9 @@
         this.alertBool = true;
         this.alertBool2 = false;
         // TODO: email this.storedCode to user
-        //this.storedCode = Math.random() * 10000000000000000;
+        this.storedCode = Math.random() * 10000000000000000;
         this.sendCode();
-        this.$router.push({
-            name: 'login'
-          })  
+
       }
       catch(error){
         this.error = error.response.data.error   
