@@ -54,6 +54,54 @@ module.exports = (app, knex, upload) => {
     }
   })
 
+  app.post('/emailCode', async (req, res) => {
+    // console.log(req.body);
+
+    const sendgrid = require('@sendgrid/mail')
+
+    sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
+
+    const message = {
+      to: req.body.email, // TODO: also make this go to database for future use
+      from: 'admin@documentdrop.com',
+      subject: 'Document Drop Reset Password',
+      text: 'here',
+      html: `
+         <p>
+           You have requested to reset your password, here is the code: ${req.body.code}
+         </p>
+         `
+    }
+  
+    // send the email
+    sendgrid.send(message)
+    
+
+  //  await knex('files')
+  //    .where({
+  //      id: req.body.data.id
+  //    })
+  //    .update({
+  //      contact_name: req.body.data.contact_name,
+  //    })
+  //    .then(function () {
+  //      res.send({
+  //        message: `Recipient created`,
+  //        data: req.body
+  //      })
+  //    })
+     .catch(e => {
+       res.send({
+         error: 'Error emailing user'
+       })
+     })
+
+    res.send({
+      data: req.body,
+      message: message
+    })
+  })
+
 
   app.post('/verify', async (req, res) => {
     try {
