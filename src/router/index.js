@@ -3,7 +3,6 @@ import Router from 'vue-router'
 import Register from '@/components/Register'
 import Login from '@/components/Login'
 import HomePage from '@/components/HomePage'
-import LandingPage from '@/components/LandingPage'
 
 Vue.use(Router)
 
@@ -11,11 +10,6 @@ export default new Router({
   routes: [
     {
       path: '/',
-      name: 'landingpage',
-      component: LandingPage
-    },
-    {
-      path: '/login',
       name: 'login',
       component: Login
     },
