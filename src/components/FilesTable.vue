@@ -194,7 +194,7 @@ export default {
     open (row) {
 
       if (row.contact_name === null || row.contact_name === '') {
-        alert("Please enter a recipient before attemping to transfer a file.")
+        // alert("Please enter a recipient before attemping to transfer a file.")
         return false
       }
 
