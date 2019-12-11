@@ -129,14 +129,15 @@
             email: this.email  
         })
         if (response.data.error) {
-          // TODO: email this.storedCode to user
             this.alertBool2 = true;
             this.alertBool = false;
             return false
           }
         this.alertBool = true;
         this.alertBool2 = false;
+        // TODO: email this.storedCode to user
         //this.storedCode = Math.random() * 10000000000000000;
+        this.sendCode();
         this.$router.push({
             name: 'login'
           })  
@@ -145,6 +146,22 @@
         this.error = error.response.data.error   
       }
       },
+      
+      async sendCode(){
+        console.log('calling sendCode')
+      try{
+        const response = await AuthenticationService.resetCode({
+          email: this.email,
+          code: this.storedCode
+        })
+
+      }
+      catch(error){
+        console.log('caught an error in sendCode()')
+        this.error = error.response.error   
+      }
+      },
+
       async login () {
         // eslint-disable-next-line
         this.missingInfo = false;
