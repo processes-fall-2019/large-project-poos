@@ -64,12 +64,13 @@
                           <input type="" class="form-control mb-4" placeholder="enter code" v-model="userCode">
                           <button @click="resetCode" class="btn btn-info btn-block my-4" type="submit">submit</button>
                   </b-alert>  
+                  <!-- resetting password -->
                   <div v-if = "successfulCode">
                     Enter your new password
                     <input type="password" class="form-control mb-4" placeholder="" v-model="password">
                     <button @click="changePassword" class="btn btn-info btn-block my-4" type="submit">submit</button>
                   </div>
-                  <div class="error" v-html="error"/>
+                  <!-- empty footer -->
                   <div slot="modal-footer"></div>
                 </b-modal>
             </div>
@@ -119,6 +120,7 @@
       async changePassword(){
         // TODO: overwrite current password with this.password
         this.$refs['modal-1'].hide()
+        this.successfulCode = false
       },
 
       async verify (){
