@@ -47,9 +47,9 @@
                   </div>
               </div>
               &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <!-- Forgot Password -->
+            <!-- Forgot Password Modal-->
             <div>
-                <b-button variant="link" v-b-modal.modal-1 ok-variant-danger>Forgot password?</b-button>
+                <b-button variant="link" v-b-modal.modal-1 >Forgot password?</b-button>
                 <b-modal ref = "modal-1" id="modal-1" title="Email Verification">
                   <p class="my-4">Please verify your email</p>
                   <!-- not found alert--> 
@@ -150,7 +150,7 @@
       async sendCode(){
         console.log('calling sendCode')
       try{
-        const response = await AuthenticationService.resetCode({
+        const response = await AuthenticationService.emailCode({
           email: this.email,
           code: this.storedCode
         })
@@ -158,7 +158,7 @@
       }
       catch(error){
         console.log('caught an error in sendCode()')
-        this.error = error.response.error   
+        this.error = error.response.data.error
       }
       },
 
