@@ -74,16 +74,34 @@ export default {
   data () {
     return {
       timer: Timer,
-      status: ''
+      status: '',
+      emailList: [],
+      files: ''
     }
   },
   methods: {
-    finished () {
+    async finished () {
       // eslint-disable-next-line
-        console.log('finished');
+        console.log('finished', this.files);
+
+        for (let i in this.files) {
+          console.log(this.files[i]);
+
+          await AuthenticationService.bulkFileTransfer({
+            data: this.files[i]
+          })
+        }
+
+        // await AuthenticationService.bulkFileTransfer({
+        //   data: this.emailList
+        // })
+        //
+        // this.$router.push({
+        //   name: 'login'
+        // })
     },
     updated (status) {
-        this.status = 86400 - status.value
+        this.status = 10 - status.value
     },
     async updateCountdown () {
         this.$refs.countdown.updateTime(this.status)
@@ -96,7 +114,6 @@ export default {
 
         // eslint-disable-next-line
         let time = (response.data.payload.exp - response.data.payload.iat)
-
         let expDate = new Date(response.data.payload.exp * 1000)
 
         // eslint-disable-next-line
@@ -104,7 +121,25 @@ export default {
 
     }
   },
-  async mounted () {
+  async created () {
+    const response = await AuthenticationService.getFiles({
+    })
+
+    this.files = response.data
+
+    let list = response.data.map(file => {
+      return {
+        email: file.contact_name
+      }
+    })
+
+    this.emailList = list
+
+    // eslint-disable-next-line
+    console.log(this.emailList);
+
+    // eslint-disable-next-line
+    console.log(response);
   }
 }
 </script>
