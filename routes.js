@@ -31,6 +31,23 @@ module.exports = (app, knex, upload) => {
       }))
   })
 
+    app.post('/verifyEmail', async (req, res) => {
+        const user = await knex.select().from('users')
+        .where({ email: req.body.email })
+        .then()
+        .catch(e => {
+          res.send({
+            error: 'Email not in use'
+          })
+        })
+
+        console.log("here: ", user)
+
+        res.send({
+          message: 'Email in use',
+        })
+    })
+
 
   app.post('/login', LoginPolicy.login, async (req, res) => {
      const {username, password} = req.body
