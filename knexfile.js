@@ -6,9 +6,9 @@ module.exports = {
     client: 'pg',
     connection: {
       host: '127.0.0.1',
-      port: '5437',
+      port: '5432',
       user: 'postgres',
-      password: '',
+      password: 'Postyboi21!@',
       database: 'large-project-database'
     },
    //  migrations: {
