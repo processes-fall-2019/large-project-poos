@@ -13,6 +13,9 @@ export default {
   emailCode (credentials) {
     return Api().post('emailCode', credentials)
   },
+  changePassword (credentials) {
+    return Api().post('changePassword', credentials)
+  },
   upload (credentials) {
     return Api().post('upload', credentials)
   },
