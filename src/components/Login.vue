@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <b-navbar toggleable="lg" type="dark" variant="info">
+      <b-navbar toggleable="lg" type="dark" variant="info" sticky>
         <img class="image" src="@/assets/image1.png"/>
         <b-navbar-brand class="title" href="#">&nbsp;Image Drop</b-navbar-brand>
 
