@@ -1,10 +1,9 @@
 <template>
   <div>
-    <!-- <h1>Document Drop</h1> -->
     <div>
       <b-navbar toggleable="lg" type="dark" variant="info">
         <img class="image" src="@/assets/image1.png"/>
-        <b-navbar-brand class="title" href="#">&nbsp;Document Drop</b-navbar-brand>
+        <b-navbar-brand class="title" href="#">&nbsp;Image Drop</b-navbar-brand>
 
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 

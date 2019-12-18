@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3> Your Files </h3>
+    <h3> Your Images </h3>
     <div class="table">
       <!-- <vue-bootstrap4-table :rows="rows" :columns="columns" :config="config" @on-select-row="openVisitorModal"> -->
       <vue-bootstrap4-table :rows="rows" :columns="columns" :config="config">
@@ -17,10 +17,10 @@
            <input placeholder="Input recipients email" v-model="props.row.contact_name" />
        </template>
        <template slot="open_modal" slot-scope="props">
-         <button @click="viewFile(props.row)" class="btn btn-primary">View File</button>
+         <button @click="viewFile(props.row)" class="btn btn-primary">View Image</button>
        </template>
        <template slot="transfer_file" slot-scope="props">
-         <button @click="open(props.row)" class="btn btn-primary">Transfer File</button>
+         <button @click="open(props.row)" class="btn btn-primary">Transfer Image</button>
        </template>
        <template slot="delete_file" slot-scope="props">
          <button @click="deleteFile(props.row)" class="btn btn-danger">Delete</button>
@@ -92,11 +92,11 @@ export default {
       rows: [],
       columns: [
       {
-        label: "File Name",
+        label: "Image Name",
         name: "name",
         filter: {
           type: "simple",
-          placeholder: "Search File Names"
+          placeholder: "Search Image Names"
         },
         sort: true,
       },
