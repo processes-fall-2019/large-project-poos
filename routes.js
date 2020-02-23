@@ -17,13 +17,13 @@ AWS.config.update({
 
 module.exports = (app, knex, upload) => {
   app.post('/register', AuthenticationControllerPolicy.register, async (req, res) => {
-    const hash = bcrypt.hashSync(req.body.password, 8)
+    // const hash = bcrypt.hashSync(req.body.password, 8)
 
     (await knex('users')
       .insert({
         user_name: req.body.username,
         email: req.body.email,
-        password: hash
+        password: bcrypt.hashSync(req.body.password, 8)
       })
       .returning('*')
       .then(function (data) {
