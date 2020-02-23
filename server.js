@@ -29,9 +29,6 @@ const upload = multer({
 })
 
 
-
-
-
 app.use(cors())
 app.use(morgan('combined'))
 app.use(bodyParser.json())
@@ -41,18 +38,6 @@ app.use(bodyParser.json())
 app.use(serveStatic(path.join(__dirname, '/dist')))
 
 require('./routes')(app, knex, upload)     // TODO: this should go in ../api/routes
-
-
-
-
-// app.use(function(err, req, res, next) {
-//   if (err.code === "LIMIT_FILE_TYPES") {
-//     res.status(422).json({ error: "Only images allowed" })
-//   }
-// })
-
-
-
 
 app.listen(port)
 

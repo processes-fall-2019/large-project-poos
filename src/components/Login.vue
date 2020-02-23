@@ -4,7 +4,6 @@
       <b-navbar toggleable="lg" type="dark" variant="info" sticky>
         <img class="image" src="@/assets/image1.png"/>
         <b-navbar-brand class="title" href="#">&nbsp;Image Drop</b-navbar-brand>
-
         <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
 
         <b-collapse id="nav-collapse" is-nav>
@@ -38,7 +37,6 @@
         <div v-if="missingInfo" class="error" v-html="error"/>
         <br />
         <div class="d-flex justify-content-around">
-
           <!-- Forgot Password Modal-->
           <div>
               <b-button variant="link" v-b-modal.modal-1 >Forgot password?</b-button>
@@ -73,12 +71,12 @@
         <button @click="login" class="btn btn-info btn-block my-4" type="submit">Sign in</button>
         <div>
             <router-link :to="{name: 'register'}">
-              <a href="">Not a member? Click here to sign up.</a>
+              <a>Not a member? Click here to sign up.</a>
             </router-link>
         </div>
       </form>
     </b-container>
-    <br><br><br><br><br><br><br><br><br><br><br><br><br>
+    <br><br><br><br><br><br>
   </div>
 </template>
 
@@ -220,13 +218,8 @@ export default {
     vertical-align: middle;
   }
   .login {
-  /* width: 50%; */
-  /* height: 650px; */
-  /* position:relative; */
   display:inline-block;
-  /* top:50%; */
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  /* color: #2c3e50; */
   margin-left: auto;
   margin-right: auto;
   background-color: white;
