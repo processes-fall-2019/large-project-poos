@@ -1,5 +1,7 @@
 const AuthenticationControllerPolicy = require('./api/policies/AuthenticationControllerPolicy')
 const LoginPolicy = require('./api/policies/LoginPolicy')
+// const User = require('./src/models/user')
+const bcrypt = require('bcrypt');
 var jwt = require('jsonwebtoken');
 const sharp = require('sharp')
 const fs = require('fs')
@@ -15,15 +17,19 @@ AWS.config.update({
 
 module.exports = (app, knex, upload) => {
   app.post('/register', AuthenticationControllerPolicy.register, async (req, res) => {
+    const hash = bcrypt.hashSync(req.body.password, 8)
+
     (await knex('users')
       .insert({
         user_name: req.body.username,
         email: req.body.email,
-        password: req.body.password
+        password: hash
       })
-      .then(function () {
+      .returning('*')
+      .then(function (data) {
         res.send({
-          message: `Hello ${req.body.username}, your user was registered`
+          message: `Hello ${req.body.username}, your user was registered`,
+          data: data
         })
       })
       .catch(e => {
@@ -75,8 +81,6 @@ module.exports = (app, knex, upload) => {
   })
 
   app.post('/emailCode', async (req, res) => {
-    // console.log(req.body);
-
     const sendgrid = require('@sendgrid/mail')
 
     sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
@@ -92,16 +96,10 @@ module.exports = (app, knex, upload) => {
          </p>
          `
     }
-  
+
     // send the email
     sendgrid.send(message)
 
-    // .catch(e => {
-    //   res.send({
-    //     error: 'Error emailing user'
-    //   })
-    // })
-    
     res.send({
       data: req.body,
       message: message
@@ -112,14 +110,6 @@ module.exports = (app, knex, upload) => {
   app.post('/verify', async (req, res) => {
     try {
       var decoded = jwt.verify(token, 'shhh')
-
-      console.log("decoded: ", decoded)
-
-      // token = jwt.sign({
-      //   username: username,
-      //   password: password,
-      //   user_id: userId
-      // }, 'shhh', { expiresIn: '1h' })
 
       res.send({
         payload: decoded
@@ -133,8 +123,6 @@ module.exports = (app, knex, upload) => {
 
 
   app.post('/transferFile', async (req, res) => {
-    // console.log(req.body);
-
     const sendgrid = require('@sendgrid/mail')
 
     sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
@@ -176,10 +164,6 @@ module.exports = (app, knex, upload) => {
          error: 'Error adding recipient to database.' + e
        })
      })
-
-    // res.send({
-    //   data: req.body
-    // })
   })
 
 
@@ -191,10 +175,6 @@ module.exports = (app, knex, upload) => {
       sendgrid.setApiKey(process.env.SENDGRID_API_KEY)
 
       console.log(req.body);
-
-      // let x = req.body.data.filter(x => x.contact_name != null)
-      // let emailList = x.map(file => file.contact_name)
-      // console.log(emailList);
 
       const message = {
         to: req.body.data.contact_name,
@@ -223,14 +203,14 @@ module.exports = (app, knex, upload) => {
         error: e
       })
     }
-
   })
 
 
   app.post('/login', LoginPolicy.login, async (req, res) => {
      const {username, password} = req.body
+
      const user = await knex.select().from('users')
-       .where({ user_name: username, password: password })
+       .where({ user_name: username })
        .then()
        .catch(e => {
          res.send({
@@ -238,27 +218,33 @@ module.exports = (app, knex, upload) => {
          })
        })
 
-     if (user.length === 0) {
-       return res.send({
-         error: 'User not found.'
-       })
-     }
+       if (user.length === 0) {
+         return res.send({
+           error: 'User not found.'
+         })
+       }
 
-     userId = user[0].id
+       // check encrypted password
+       if(bcrypt.compareSync(password, user[0].password)) {
+         // Passwords match
+         userId = user[0].id
 
-     token = jwt.sign({
-       username: username,
-       password: password,
-       user_id: userId
-     }, 'shhh', { expiresIn: '1h' })
+         token = jwt.sign({
+           username: username,
+           password: password,
+           user_id: userId
+         }, 'shhh', { expiresIn: '1h' })
 
-     console.log("token: ", token);
-
-     res.send({
-       message: `Hello ${req.body.username}, Welcome back.`,
-       // user: user,
-       Authorization:  `Bearer: ${token}`
-     })
+         res.send({
+           message: `Hello ${req.body.username}, Welcome back.`,
+           Authorization:  `Bearer: ${token}`
+         })
+       } else {
+         // Passwords don't match
+         res.send({
+          error: 'User not found.'
+         })
+       }
    })
 
 
